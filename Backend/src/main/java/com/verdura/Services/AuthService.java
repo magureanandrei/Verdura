@@ -1,6 +1,8 @@
 package com.verdura.Services;
 import com.verdura.Models.User;
 import com.verdura.Models.UserSettings;
+import com.verdura.Models.Roles;
+import com.verdura.Repos.RoleRepo;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +15,15 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepo roleRepository;
 
     @Autowired
-    public AuthService(UserService userService,SettingsService settingsService, PasswordEncoder passwordEncoder) {
+    public AuthService(UserService userService,
+                      PasswordEncoder passwordEncoder, 
+                      RoleRepo roleRepository) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
 
 
@@ -42,6 +48,12 @@ public class AuthService {
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(encodedPassword);
+
+        // Set default role as ROLE_USER (ID: 1)
+        Roles userRole = roleRepository.findById(1L)
+            .orElseThrow(() -> new RuntimeException("Default user role not found"));
+        user.setRole(userRole);
+
         user.setSettings(userSettings);
         userSettings.setUser(user);
 
@@ -67,5 +79,20 @@ public class AuthService {
             SecurityContextHolder.clearContext();
         }
         session.invalidate();
+    }
+
+    public void updateUserPassword(User user, String newPassword) throws RuntimeException {
+        if(user == null || newPassword == null || newPassword.isEmpty()) {
+            throw new RuntimeException("User or new password cannot be empty");
+        }
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        userService.updatePassword(user, encodedPassword);
+    }
+
+    public boolean checkCurrentPassword(User user, String currentPassword) throws RuntimeException {
+        if (user == null || currentPassword == null || currentPassword.isEmpty()) {
+            throw new RuntimeException("User or current password cannot be empty");
+        }
+        return passwordEncoder.matches(currentPassword, user.getPassword());
     }
 }

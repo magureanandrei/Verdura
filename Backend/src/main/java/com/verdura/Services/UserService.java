@@ -3,7 +3,6 @@ package com.verdura.Services;
 import com.verdura.Repos.UserRepo;
 import com.verdura.Models.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +10,6 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepo userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserService(UserRepo userRepository) {
@@ -72,19 +69,12 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public void updatePassword(User user, String newPassword) throws RuntimeException {
-        if(user == null || newPassword == null || newPassword.isEmpty()) {
+    public void updatePassword(User user, String encodedPassword) throws RuntimeException {
+        if(user == null || encodedPassword == null || encodedPassword.isEmpty()) {
             throw new RuntimeException("User or new password cannot be empty");
         }
-        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setPassword(encodedPassword);
         userRepository.save(user);
-    }
-
-    public boolean checkCurrentPassword(User user, String currentPassword) throws RuntimeException {
-        if (user == null || currentPassword == null || currentPassword.isEmpty()) {
-            throw new RuntimeException("User or current password cannot be empty");
-        }
-        return passwordEncoder.matches(currentPassword, user.getPassword());
     }
 
 }

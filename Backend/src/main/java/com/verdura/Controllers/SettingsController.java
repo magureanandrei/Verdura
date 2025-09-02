@@ -69,7 +69,7 @@ public class SettingsController {
         User sessionUser = (User) session.getAttribute("user");
         User user = userService.getUserById(sessionUser.getUserId());
 
-        if(!userService.checkCurrentPassword(user, oldPassword)) {
+        if(!authService.checkCurrentPassword(user, oldPassword)) {
             redirectAttributes.addFlashAttribute("error", "Failed to change password. Current password is incorrect.");
             redirectAttributes.addFlashAttribute("activeTab","account");
             return "redirect:/settings?activeTab=account&message=Incorrect+current+password.";
@@ -81,7 +81,7 @@ public class SettingsController {
             return "redirect:/settings?activeTab=account&message=Password+must+be+at+least+8+characters.";
         }
 
-        userService.updatePassword(user, newPassword);
+        authService.updateUserPassword(user, newPassword);
         redirectAttributes.addFlashAttribute("message", "Password changed successfully");
         redirectAttributes.addFlashAttribute("activeTab","account");
         return "redirect:/settings?activeTab-account&message=Password+changed+successfully";

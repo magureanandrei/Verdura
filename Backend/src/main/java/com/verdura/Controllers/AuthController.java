@@ -1,59 +1,79 @@
 package com.verdura.Controllers;
 
+import com.verdura.Config.Security.JwtUtil;
+import com.verdura.Models.User;
 import com.verdura.Services.AuthService;
 import com.verdura.Services.UserService;
-import com.verdura.Models.User;
-import jakarta.servlet.http.HttpSession;
+import com.verdura.Services.DTOConverterService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
+import com.verdura.DTOs.RegisterRequest;
+import com.verdura.DTOs.LoginRequest;
 
-@Controller
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/auth")
 public class AuthController {
-
-
-    private AuthService authService;
-    private UserService userService;
+    private final AuthService authService;
+    private final UserService userService;
+    private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+    private final DTOConverterService dtoConverterService;
 
     @Autowired
-    public AuthController(AuthService authService, UserService userService) {
+    public AuthController(AuthService authService, 
+                         UserService userService, 
+                         JwtUtil jwtUtil, 
+                         AuthenticationManager authenticationManager,
+                         DTOConverterService dtoConverterService) {
         this.authService = authService;
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
+        this.dtoConverterService = dtoConverterService;
     }
 
     @PostMapping("/register")
-    public String handleRegister(@RequestParam("username") String username,
-                                 @RequestParam("email") String email,
-                                 @RequestParam("password") String password,
-                                 Model model) {
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         try {
-            authService.registerUser(username, email, password);
-            return "redirect:/account-created";
+            User user = authService.registerUser(
+                request.getUsername(),
+                request.getEmail(),
+                request.getPassword()
+            );
+            return ResponseEntity.ok(dtoConverterService.convertToUserDTO(user));
         } catch (RuntimeException e) {
-            model.addAttribute("username", username);
-            model.addAttribute("email", email);
-            model.addAttribute("error", e.getMessage());
-            return "register";
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PostMapping("/login")
-    public String handleLogin(@RequestParam("username") String username,
-                            @RequestParam("password") String password,
-                            Model model, HttpSession session, RedirectAttributes redirectAttributes) {
-            User user = userService.getUserByUsername(username);
-        if (user == null || !userService.checkCurrentPassword(user, password)) {
-            redirectAttributes.addFlashAttribute("loginError", "Invalid email or password.");
-            return "redirect:/login";
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    request.getUsername(),
+                    request.getPassword()
+                )
+            );
+            
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String token = jwtUtil.generateToken(userDetails);
+            User user = userService.getUserByUsername(userDetails.getUsername());
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("user", dtoConverterService.convertToUserDTO(user));
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Invalid username or password");
         }
-            User user1 = authService.loginUser(username, password);
-            model.addAttribute("user", user1);
-            session.setAttribute("user", user1);
-            return "redirect:/pomodoro";
-
     }
-
 }
