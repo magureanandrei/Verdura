@@ -19,6 +19,9 @@ public class User{
     private String password;
     @Column(nullable = false, unique = true)
     private String email;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Roles role;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<PomodoroSession> sessions= new ArrayList<>();
     @OneToOne(mappedBy ="user", cascade = CascadeType.ALL)
@@ -44,6 +47,14 @@ public class User{
 
     public String getUsername() {
         return username;
+    }
+
+    public Roles getRole() {
+        return role;
+    }
+
+    public void setRole(Roles role) {
+        this.role = role;
     }
 
     public void setUsername(String username) {
