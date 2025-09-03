@@ -51,12 +51,15 @@ public class JwtUtil {
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        if (userDetails instanceof org.springframework.security.core.userdetails.User) {
+            extraClaims.put("userId", ((org.springframework.security.core.userdetails.User) userDetails).getUsername());
+        }
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24)) // 24 hour token validity
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 hour token validity
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
