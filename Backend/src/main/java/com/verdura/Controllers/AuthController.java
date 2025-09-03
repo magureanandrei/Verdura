@@ -48,7 +48,20 @@ public class AuthController {
                 request.getEmail(),
                 request.getPassword()
             );
-            return ResponseEntity.ok(dtoConverterService.convertToUserDTO(user));
+            
+            // Generate JWT token just like in login
+            UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .authorities("ROLE_USER")
+                .build();
+            
+            String token = jwtUtil.generateToken(userDetails);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("user", dtoConverterService.convertToUserDTO(user));
+            return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
