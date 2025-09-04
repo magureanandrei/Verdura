@@ -5,6 +5,7 @@ import LoginPage from "./components/LoginPage"
 import RegisterPage from "./components/RegisterPage"
 import HistoryPage from "./components/HistoryPage"
 import SettingsPage from "./components/SettingsPage"
+import { ToastContainer } from "react-toastify";
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/history" element={<HistoryPage />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Routes>
+      <ToastContainer position="top-right" autoClose={3000} />
     </>
   )
 }

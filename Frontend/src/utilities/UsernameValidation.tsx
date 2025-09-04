@@ -10,8 +10,11 @@ export async function validateUsername(username: string): Promise<string | null>
   }
 
   try {
-    const response = await axios.get(`http://localhost:8080/auth/check-username`, //requestbody is "username": the username);
-    const exists = response.data.exists;
+    const response = await axios.post("http://localhost:8080/auth/check-username", {
+      username: username
+    });
+
+    const exists = response.data; 
 
     if (exists) {
       return "Username already exists";
@@ -21,6 +24,5 @@ export async function validateUsername(username: string): Promise<string | null>
     return "Could not validate username. Please try again.";
   }
 
-  // ✅ No validation errors
   return null;
 }

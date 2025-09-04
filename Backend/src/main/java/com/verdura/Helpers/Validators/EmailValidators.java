@@ -1,7 +1,10 @@
 package com.verdura.Helpers.Validators;
 
+import org.springframework.stereotype.Component;
+
 import com.verdura.Services.UserService;
 
+@Component
 public class EmailValidators {
     private UserService userService;
     public EmailValidators(UserService userService) {

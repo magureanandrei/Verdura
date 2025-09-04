@@ -1,5 +1,8 @@
 package com.verdura.Helpers.Validators;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class PasswordValidators {
     public void validatePassword(String password) {
         if (password == null || password.trim().isEmpty()) {
