@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import type { RegisterRequest } from "../interfaces/RegisterRequest";
 import axios from "axios";
-import { toast  } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { validateUsername } from "../utilities/UsernameValidation";
 import { validateEmail } from "../utilities/EmailValidation";
@@ -40,10 +40,19 @@ export default function RegisterPage() {
         password,
       };
 
-      const response = await axios.post<RegisterRequest>("http://localhost:8080/auth/register", registerData);
+      const response = await axios.post(
+        "http://localhost:8080/auth/register",
+        registerData
+      );
 
       if (response.status === 201 || response.status === 200) {
         toast.success("Account created successfully!");
+        const { token, user } = response.data;
+        localStorage.setItem("token", token);
+        localStorage.setItem("userId", user.userId);
+        // console.log('Token:', token);
+        // console.log('User ID:', user.userId);
+        // console.log("Registration successful");
         navigate("/dashboard");
       }
     } catch (err) {
