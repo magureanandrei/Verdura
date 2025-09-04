@@ -13,6 +13,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import com.verdura.DTOs.RegisterRequest;
+import com.verdura.Helpers.Validators.PasswordValidators;
+import com.verdura.Helpers.Validators.UsernameValidators;
+import com.verdura.Helpers.Validators.EmailValidators;
 import com.verdura.DTOs.LoginRequest;
 
 import java.util.HashMap;
@@ -26,18 +29,28 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final DTOConverterService dtoConverterService;
+    private final PasswordValidators passwordValidators;
+    private final UsernameValidators usernameValidators;
+    private final EmailValidators emailValidators;
+    
 
     @Autowired
     public AuthController(AuthService authService, 
                          UserService userService, 
                          JwtUtil jwtUtil, 
                          AuthenticationManager authenticationManager,
-                         DTOConverterService dtoConverterService) {
+                         DTOConverterService dtoConverterService,
+                         PasswordValidators passwordValidators,
+                        UsernameValidators usernameValidators,
+                        EmailValidators emailValidators) {
         this.authService = authService;
         this.userService = userService;
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
         this.dtoConverterService = dtoConverterService;
+        this.passwordValidators = passwordValidators;
+        this.usernameValidators = usernameValidators;
+        this.emailValidators = emailValidators;
     }
 
     @PostMapping("/register")
@@ -48,7 +61,20 @@ public class AuthController {
                 request.getEmail(),
                 request.getPassword()
             );
-            return ResponseEntity.ok(dtoConverterService.convertToUserDTO(user));
+            
+            // Generate JWT token just like in login
+            UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .authorities("ROLE_USER")
+                .build();
+            
+            String token = jwtUtil.generateToken(userDetails);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("user", dtoConverterService.convertToUserDTO(user));
+            return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -74,6 +100,28 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Invalid username or password");
+        }
+    }
+
+    @PostMapping("/check-username")
+    public ResponseEntity<Boolean> checkUsername(@RequestBody Map<String, String> request) {
+        try {
+            String username = request.get("username");
+            boolean isUnique = !usernameValidators.isUniqueUsername(username);
+            return ResponseEntity.ok(isUnique);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(false);
+        }
+    }
+
+    @PostMapping("/check-email")
+    public ResponseEntity<Boolean> checkEmail(@RequestBody Map<String, String> request) {
+        try {
+            String email = request.get("email");
+            boolean isUnique = !emailValidators.isUniqueEmail(email);
+            return ResponseEntity.ok(isUnique);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(false);
         }
     }
 }
