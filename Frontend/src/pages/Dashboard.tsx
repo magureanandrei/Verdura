@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -23,6 +24,15 @@ export default function Dashboard() {
             {localStorage.getItem('token') && (
                 <button onClick={handleLogout}>Logout</button>
             )}
-            </>
+
+            <CountdownCircleTimer
+            isPlaying
+            duration={7}
+            colors={['#004777', '#F7B801', '#A30000', '#A30000']}
+            colorsTime={[7, 5, 2, 0]}
+            >
+            {({ remainingTime }: { remainingTime: number }) => remainingTime}
+            </CountdownCircleTimer>
+        </>
     )
 }

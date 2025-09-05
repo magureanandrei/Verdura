@@ -1,15 +1,17 @@
 import { Navigate, Route, Routes } from "react-router-dom"
-import HomePage from "./components/HomePage"
-import Dashboard from "./components/Dashboard"
-import LoginPage from "./components/LoginPage"
-import RegisterPage from "./components/RegisterPage"
-import HistoryPage from "./components/HistoryPage"
-import SettingsPage from "./components/SettingsPage"
+import HomePage from "./pages/HomePage"
+import Dashboard from "./pages/Dashboard"
+import LoginPage from "./pages/LoginPage"
+import RegisterPage from "./pages/RegisterPage"
+import HistoryPage from "./pages/HistoryPage"
+import SettingsPage from "./pages/SettingsPage"
 import { ToastContainer } from "react-toastify";
+import Navbar from "./components/Navbar/Navbar"
 
 export default function App() {
   return (
     <>
+    <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="*" element={<Navigate to={"/"} replace />} />
