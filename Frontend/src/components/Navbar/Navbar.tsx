@@ -39,8 +39,9 @@ export default function Navbar(): JSX.Element {
   };
 
   const handleLogoutClick = (): void => {
-    // Add your logout logic here
-    console.log('Logout clicked');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate("/");
     handleMenuClose();
   };
 

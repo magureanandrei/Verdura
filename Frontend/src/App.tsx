@@ -7,6 +7,7 @@ import HistoryPage from "./pages/HistoryPage"
 import SettingsPage from "./pages/SettingsPage"
 import { ToastContainer } from "react-toastify";
 import Navbar from "./components/Navbar/Navbar"
+import ProfilePage from "./pages/ProfilePage"
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/history" element={<HistoryPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Routes>
       <ToastContainer position="top-right" autoClose={3000} />
