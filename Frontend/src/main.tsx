@@ -4,13 +4,13 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.tsx'
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@emotion/react';
-import { verduraTheme } from './theme';
+import { verduraDarkTheme } from './theme';
 
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-      <ThemeProvider theme={verduraTheme}>
-      <CssBaseline /> {/* Applies theme background and resets */}
+      <ThemeProvider theme={verduraDarkTheme}>
+      <CssBaseline />
       <BrowserRouter>
         <App />
       </BrowserRouter>

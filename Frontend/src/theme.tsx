@@ -80,7 +80,7 @@ export const verduraDarkTheme = createTheme({
       contrastText: '#000000',
     },
     background: {
-      default: '#1B5E20',
+      default: '#88bf89',
       paper: '#2E7D32',
     },
     text: {

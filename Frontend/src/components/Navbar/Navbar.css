@@ -2,7 +2,7 @@
 
 /* Custom styles that complement the Material-UI theme */
 #navbar-appbar {
-  background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+  background: #1b5e20;
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -120,13 +120,13 @@
     padding-left: 16px;
     padding-right: 16px;
   }
-  
+
   .navbar-nav-button {
     margin: 0 4px;
     padding: 6px 12px;
     font-size: 0.875rem;
   }
-  
+
   #navbar-title {
     font-size: 1.1rem;
   }
@@ -136,7 +136,7 @@
   .nav-separator {
     display: none;
   }
-  
+
   .navbar-nav-button {
     margin: 0 2px;
     padding: 6px 8px;
