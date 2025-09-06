@@ -70,7 +70,7 @@ export default function Navbar(): JSX.Element {
               color: "inherit",
               cursor: "pointer",
             }}
-            onClick={() => navigate("/")}
+            onClick={() => navigate(userIsAuthenticated ? "/dashboard" : "/")}
           >
             🥬 Verdura
           </Typography>
