@@ -1,3 +1,5 @@
+/* Timer.css - Simple background color matching */
+
 .timer-wrapper {
   display: flex;
   justify-content: center;
@@ -21,8 +23,12 @@
   width: 350px;
   height: 350px;
   border-radius: 20px;
-  background: linear-gradient(135deg, #081C15, #1B4332);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  
+  /* Background color will be set dynamically via inline styles */
+  /* This matches the exact color of the circular timer */
+  transition: background-color 0.3s ease;
+  
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 .timer-circle-overlay {
@@ -47,7 +53,7 @@
   font-size: 48px;
   font-weight: bold;
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   margin-bottom: 20px;
 }
 
@@ -74,4 +80,8 @@
 .timer-button:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
+}
+
+.timer-button:active {
+  transform: translateY(0px);
 }
