@@ -23,9 +23,7 @@
   width: 350px;
   height: 350px;
   border-radius: 20px;
-  
-  /* Background color will be set dynamically via inline styles */
-  /* This matches the exact color of the circular timer */
+  background:  linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0fdfa 100%);
   transition: background-color 0.3s ease;
   
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);

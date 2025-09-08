@@ -1,6 +1,3 @@
-/* navbar.css - Additional CSS styles for Navbar */
-
-/* Custom styles that complement the Material-UI theme */
 #navbar-appbar {
   background: #1b5e20;
   backdrop-filter: blur(10px);
@@ -26,7 +23,6 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Navigation buttons styling */
 .navbar-nav-button {
   margin: 0 8px;
   padding: 8px 16px;
@@ -48,14 +44,12 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Navigation separator styling */
 .nav-separator {
   color: rgba(255, 255, 255, 0.7);
   margin: 0 4px;
   font-weight: 300;
 }
 
-/* Hamburger menu button */
 .hamburger-menu {
   padding: 8px;
   border-radius: 8px;
@@ -87,7 +81,6 @@
   background-color: rgba(255, 255, 255, 0.9);
 }
 
-/* Profile menu styling */
 .profile-menu {
   margin-top: 8px;
   border-radius: 12px;
@@ -114,7 +107,6 @@
   background-color: rgba(244, 67, 54, 0.08);
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
   #navbar-toolbar {
     padding-left: 16px;

@@ -1,7 +1,7 @@
-import { CountdownCircleTimer } from "react-countdown-circle-timer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { DefaultTimerSettings } from "../../interfaces/DefaultTimerSettings";
 import "./Timer.css";
+import CircularTimer from "../CircluarTimer/CircularTimer";
 
 const DEFAULT_TIMER_SETTINGS: DefaultTimerSettings = {
   workDuration: 1,
@@ -10,13 +10,17 @@ const DEFAULT_TIMER_SETTINGS: DefaultTimerSettings = {
   sessionsBeforeLongBreak: 4,
 };
 
-// Timer colors - same as the circular timer
-const TIMER_COLORS = ["#1B4332", "#40916C", "#EE9B00", "#AE2012"];
-
 export default function Timer() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [key, setKey] = useState(0);
-  const [currentColor, setCurrentColor] = useState<string>(TIMER_COLORS[0]);
+  const [remainingTime, setRemainingTime] = useState(
+    DEFAULT_TIMER_SETTINGS.workDuration * 60
+  );
+  const [sessionType, setSessionType] = useState<
+    "work" | "shortBreak" | "longBreak"
+  >("work");
+
+  const totalDuration = DEFAULT_TIMER_SETTINGS.workDuration * 60;
+  const progress = ((totalDuration - remainingTime) / totalDuration) * 100;
 
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -26,24 +30,29 @@ export default function Timer() {
       .padStart(2, "0")}`;
   };
 
- const getCurrentColor = (remainingTime: number): string => {
-  const totalDuration = DEFAULT_TIMER_SETTINGS.workDuration * 60;
-  
-  // Calculate proportional thresholds in seconds for your timer duration
-  const threshold1 = (7/10) * totalDuration; // 42 seconds for 1-minute timer
-  const threshold2 = (5/10) * totalDuration; // 30 seconds for 1-minute timer  
-  const threshold3 = (2/10) * totalDuration; // 12 seconds for 1-minute timer
-  
-  if (remainingTime >= threshold1) {
-    return TIMER_COLORS[0]; // Green
-  } else if (remainingTime >= threshold2) {
-    return TIMER_COLORS[1]; // Light green
-  } else if (remainingTime >= threshold3) {
-    return TIMER_COLORS[2]; // Orange
-  } else {
-    return TIMER_COLORS[3]; // Red
-  }
-};
+  // Timer countdown effect
+  useEffect(() => {
+    let interval: number | null = null;
+
+    if (isPlaying && remainingTime > 0) {
+      interval = window.setInterval(() => {
+        setRemainingTime((prevTime) => {
+          if (prevTime <= 1) {
+            setIsPlaying(false);
+            setSessionType(sessionType === 'work' ? 'shortBreak' : 'work');
+            return sessionType === 'work' 
+              ? DEFAULT_TIMER_SETTINGS.shortBreakDuration * 60 
+              : DEFAULT_TIMER_SETTINGS.workDuration * 60;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isPlaying, remainingTime, sessionType]);
 
   const handleStart = () => {
     setIsPlaying(true);
@@ -55,47 +64,21 @@ export default function Timer() {
 
   const handleReset = () => {
     setIsPlaying(false);
-    setKey((prevKey) => prevKey + 1);
-    setCurrentColor(TIMER_COLORS[0]); // Reset to initial color
+    setRemainingTime(totalDuration);
   };
 
   return (
     <div className="timer-wrapper">
-      <div 
-        className="timer-container"
-        style={{
-          backgroundColor: currentColor,
-        }}
-      >
-        {/* Circular timer overlay */}
+      <div className="timer-container">
         <div className="timer-circle-overlay">
-          <CountdownCircleTimer
-            key={key}
-            isPlaying={isPlaying}
-            duration={DEFAULT_TIMER_SETTINGS.workDuration * 60}
-            colors={["#1B4332", "#40916C", "#EE9B00", "#AE2012"] as const}
-            colorsTime={[
-              (7/10) * DEFAULT_TIMER_SETTINGS.workDuration * 60,
-              (5/10) * DEFAULT_TIMER_SETTINGS.workDuration * 60,
-              (2/10) * DEFAULT_TIMER_SETTINGS.workDuration * 60,
-              0
-            ]}
-            size={280}
-            strokeWidth={8}
-            onUpdate={(remainingTime: number) => {
-              const newColor = getCurrentColor(remainingTime);
-              if (newColor !== currentColor) {
-                setCurrentColor(newColor);
-              }
-            }}
-          >
-            {({ remainingTime }: { remainingTime: number }) => (
-              <div className="timer-display">{formatTime(remainingTime)}</div>
-            )}
-          </CountdownCircleTimer>
+          <CircularTimer
+            progress={progress}
+            timeText={formatTime(remainingTime)}
+            sessionType={sessionType}
+            isRunning={isPlaying}
+          />
         </div>
 
-        {/* Controls positioned at bottom */}
         <div className="timer-content">
           <div className="timer-controls">
             {!isPlaying ? (
