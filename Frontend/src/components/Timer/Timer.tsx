@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import type { DefaultTimerSettings } from "../../interfaces/DefaultTimerSettings";
 import "./Timer.css";
 import CircularTimer from "../CircluarTimer/CircularTimer";
+import { Play, Pause, RotateCcw } from "lucide-react";
 
 const DEFAULT_TIMER_SETTINGS: DefaultTimerSettings = {
-  workDuration: 1,
+  workDuration: 2,
   shortBreakDuration: 5,
   longBreakDuration: 15,
   sessionsBeforeLongBreak: 4,
@@ -19,7 +20,20 @@ export default function Timer() {
     "work" | "shortBreak" | "longBreak"
   >("work");
 
-  const totalDuration = DEFAULT_TIMER_SETTINGS.workDuration * 60;
+  const getTotalDuration = () => {
+    switch (sessionType) {
+      case "work":
+        return DEFAULT_TIMER_SETTINGS.workDuration * 60;
+      case "shortBreak":
+        return DEFAULT_TIMER_SETTINGS.shortBreakDuration * 60;
+      case "longBreak":
+        return DEFAULT_TIMER_SETTINGS.longBreakDuration * 60;
+      default:
+        return DEFAULT_TIMER_SETTINGS.workDuration * 60;
+    }
+  };
+
+  const totalDuration = getTotalDuration();
   const progress = ((totalDuration - remainingTime) / totalDuration) * 100;
 
   const formatTime = (seconds: number): string => {
@@ -39,9 +53,9 @@ export default function Timer() {
         setRemainingTime((prevTime) => {
           if (prevTime <= 1) {
             setIsPlaying(false);
-            setSessionType(sessionType === 'work' ? 'shortBreak' : 'work');
-            return sessionType === 'work' 
-              ? DEFAULT_TIMER_SETTINGS.shortBreakDuration * 60 
+            setSessionType(sessionType === "work" ? "shortBreak" : "work");
+            return sessionType === "work"
+              ? DEFAULT_TIMER_SETTINGS.shortBreakDuration * 60
               : DEFAULT_TIMER_SETTINGS.workDuration * 60;
           }
           return prevTime - 1;
@@ -54,17 +68,19 @@ export default function Timer() {
     };
   }, [isPlaying, remainingTime, sessionType]);
 
-  const handleStart = () => {
-    setIsPlaying(true);
+  const toggleTimer = () => {
+    setIsPlaying(!isPlaying);
   };
 
-  const handlePause = () => {
+  const resetTimer = () => {
     setIsPlaying(false);
-  };
-
-  const handleReset = () => {
-    setIsPlaying(false);
-    setRemainingTime(totalDuration);
+    const newDuration =
+      sessionType === "work"
+        ? DEFAULT_TIMER_SETTINGS.workDuration * 60
+        : sessionType === "shortBreak"
+        ? DEFAULT_TIMER_SETTINGS.shortBreakDuration * 60
+        : DEFAULT_TIMER_SETTINGS.longBreakDuration * 60;
+    setRemainingTime(newDuration);
   };
 
   return (
@@ -78,22 +94,25 @@ export default function Timer() {
             isRunning={isPlaying}
           />
         </div>
-
-        <div className="timer-content">
-          <div className="timer-controls">
-            {!isPlaying ? (
-              <button className="timer-button" onClick={handleStart}>
-                ▶️ Start
-              </button>
+        <div className="control-buttons">
+          <button onClick={toggleTimer} className="start-pause-button">
+            {isPlaying ? (
+              <>
+                <Pause className="control-icon" />
+                Pause
+              </>
             ) : (
-              <button className="timer-button" onClick={handlePause}>
-                ⏸️ Pause
-              </button>
+              <>
+                <Play className="control-icon" />
+                Start
+              </>
             )}
-            <button className="timer-button" onClick={handleReset}>
-              🔄 Reset
-            </button>
-          </div>
+          </button>
+
+          <button onClick={resetTimer} className="reset-button">
+            <RotateCcw className="control-icon" />
+            Reset
+          </button>
         </div>
       </div>
     </div>

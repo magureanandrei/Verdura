@@ -18,9 +18,9 @@ const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessi
 
   const getSessionColor = () => {
     switch (sessionType) {
-      case 'work': return '#1b5e20'; // Dark green
-      case 'shortBreak': return '#2e7d32'; // Medium green
-      case 'longBreak': return '#388e3c'; // Lighter green
+      case 'work': return '#1b5e20';
+      case 'shortBreak': return '#1b5e20'; 
+      case 'longBreak': return '#1b5e20'; 
       default: return '#1b5e20';
     }
   };
@@ -36,7 +36,6 @@ const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessi
 
   return (
     <div className="circular-timer">
-      {/* Outer glow ring when running */}
       {isRunning && (
         <div 
           className="timer-glow"
@@ -46,13 +45,11 @@ const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessi
         />
       )}
       
-      {/* Background Circle */}
       <svg
         height={radius * 2}
         width={radius * 2}
         className="timer-svg"
       >
-        {/* Background track */}
         <circle
           stroke="#e2e8f0"
           fill="transparent"
@@ -63,7 +60,6 @@ const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessi
           className="timer-track"
         />
         
-        {/* Progress circle */}
         <circle
           stroke={getSessionColor()}
           fill="transparent"
@@ -81,7 +77,6 @@ const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessi
         />
       </svg>
       
-      {/* Center Content */}
       <div className="timer-content">
         <div className={`timer-text ${isRunning ? 'timer-text-running' : 'timer-text-stopped'}`}>
           {timeText}
@@ -92,12 +87,7 @@ const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessi
         </div>
         
         {/* Inner pulse effect when running */}
-        {isRunning && (
-          <div 
-            className="timer-pulse"
-            style={{ backgroundColor: getSessionColor() }}
-          />
-        )}
+        
       </div>
       
       {/* Quarter dots around the circle (4 dots at 12, 3, 6, 9 o'clock) */}
