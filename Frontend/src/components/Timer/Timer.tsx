@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import type { DefaultTimerSettings } from "../../interfaces/DefaultTimerSettings";
 import "./Timer.css";
 import CircularTimer from "../CircluarTimer/CircularTimer";
+import SessionSettingsContainer from "../SessionSettingsContainer/SessionSettingsContainer";
 import { Play, Pause, RotateCcw } from "lucide-react";
 
 const DEFAULT_TIMER_SETTINGS: DefaultTimerSettings = {
@@ -115,6 +116,7 @@ export default function Timer() {
           </button>
         </div>
       </div>
+      <SessionSettingsContainer />
     </div>
   );
 }
