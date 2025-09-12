@@ -1,6 +1,12 @@
 import { createTheme } from '@mui/material/styles';
 
 export const verduraTheme = createTheme({
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontWeightRegular: 400,
+    fontWeightMedium: 500,
+    fontWeightBold: 700,
+  },
   palette: {
     mode: 'light',
     primary: {
@@ -65,6 +71,12 @@ export const verduraTheme = createTheme({
 });
 
 export const verduraDarkTheme = createTheme({
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontWeightRegular: 400,
+    fontWeightMedium: 500,
+    fontWeightBold: 700,
+  },
   palette: {
     mode: 'dark',
     primary: {
