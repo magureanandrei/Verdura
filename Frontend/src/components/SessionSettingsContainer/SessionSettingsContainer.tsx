@@ -1,60 +1,9 @@
 import { useState } from "react";
 import { Settings, History, Plus } from "lucide-react";
 import "./SessionSettingsContainer.css";
-
-interface SessionSettings {
-  sessionName: string;
-  workDuration: number;
-  breakDuration: number;
-  sessions: number;
-  autoStartBreaks: boolean;
-  autoStartWorkPeriods: boolean;
-}
-
-interface PresetSettings {
-  id: string;
-  name: string;
-  settings: SessionSettings;
-}
-
-const defaultPresets: PresetSettings[] = [
-  {
-    id: "classic",
-    name: "Classic Pomodoro",
-    settings: {
-      sessionName: "",
-      workDuration: 25,
-      breakDuration: 5,
-      sessions: 4,
-      autoStartBreaks: false,
-      autoStartWorkPeriods: false,
-    },
-  },
-  {
-    id: "short-burst",
-    name: "Short Burst",
-    settings: {
-      sessionName: "",
-      workDuration: 15,
-      breakDuration: 3,
-      sessions: 3,
-      autoStartBreaks: true,
-      autoStartWorkPeriods: false,
-    },
-  },
-  {
-    id: "extended",
-    name: "Extended Focus",
-    settings: {
-      sessionName: "",
-      workDuration: 45,
-      breakDuration: 10,
-      sessions: 2,
-      autoStartBreaks: false,
-      autoStartWorkPeriods: false,
-    },
-  },
-];
+import type { SessionSettings } from "../../interfaces/SessionSettings";
+import type { PresetSettings } from "../../interfaces/PresetSettings";
+import { defaultPresets } from "../../interfaces/DefaultPresets";
 
 export default function SessionSettingsContainer() {
   const [activeTab, setActiveTab] = useState<"settings" | "presets">(
@@ -65,10 +14,10 @@ export default function SessionSettingsContainer() {
     workDuration: 25,
     breakDuration: 5,
     sessions: 4,
-    autoStartBreaks: false,
-    autoStartWorkPeriods: false,
+    autoStart: true,
   });
   const [presets, setPresets] = useState<PresetSettings[]>(defaultPresets);
+  const [saveToPresets, setSaveToPresets] = useState(false);
 
   const handleSettingChange = (
     key: keyof SessionSettings,
@@ -78,11 +27,6 @@ export default function SessionSettingsContainer() {
       ...prev,
       [key]: value,
     }));
-  };
-
-  const addToHistory = () => {
-    // TODO: Implement add to history functionality
-    console.log("Adding current settings to history:", currentSettings);
   };
 
   const applyPreset = (preset: PresetSettings) => {
@@ -100,6 +44,21 @@ export default function SessionSettingsContainer() {
       setPresets((prev) => [...prev, newPreset]);
     }
   };
+
+  const handleSettingsAddToHistory = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Apply settings to timer (your main functionality)
+    console.log("Applying settings to timer:", currentSettings);
+    
+    // If checkbox is checked, also save to presets
+    if (saveToPresets) {
+      //not sure what this is :(
+      addCustomPreset();
+      setSaveToPresets(false); // Reset checkbox after saving
+    }
+  };
+
 
   return (
     <div className="settings-container">
@@ -128,6 +87,7 @@ export default function SessionSettingsContainer() {
             <h3 className="settings-title">Timer Configuration</h3>
 
             {/* Session Name */}
+          <form onSubmit={handleSettingsAddToHistory}>
             <div className="setting-group">
               <label className="setting-label">Session Name</label>
               <input
@@ -151,7 +111,7 @@ export default function SessionSettingsContainer() {
                   type="range"
                   min="5"
                   max="90"
-                  step="5"
+                  step="1"
                   value={currentSettings.workDuration}
                   onChange={(e) =>
                     handleSettingChange(
@@ -189,7 +149,7 @@ export default function SessionSettingsContainer() {
                 </label>
                 <input
                   type="range"
-                  min="2"
+                  min="1"
                   max="10"
                   step="1"
                   value={currentSettings.sessions}
@@ -207,13 +167,13 @@ export default function SessionSettingsContainer() {
                 <label className="checkbox-label">
                   <input
                     type="checkbox"
-                    checked={currentSettings.autoStartBreaks}
+                    checked={currentSettings.autoStart}
                     onChange={(e) =>
-                      handleSettingChange("autoStartBreaks", e.target.checked)
+                      handleSettingChange("autoStart", e.target.checked)
                     }
                     className="setting-checkbox"
                   />
-                  <span className="checkbox-text">Auto-start breaks</span>
+                  <span className="checkbox-text">Auto-start sessions</span>
                 </label>
               </div>
 
@@ -221,25 +181,21 @@ export default function SessionSettingsContainer() {
                 <label className="checkbox-label">
                   <input
                     type="checkbox"
-                    checked={currentSettings.autoStartWorkPeriods}
-                    onChange={(e) =>
-                      handleSettingChange(
-                        "autoStartWorkPeriods",
-                        e.target.checked
-                      )
-                    }
+                    checked={saveToPresets}
+                    onChange={(e) => setSaveToPresets(e.target.checked)}
                     className="setting-checkbox"
                   />
-                  <span className="checkbox-text">Auto-start work periods</span>
+                  <span className="checkbox-text">Save session to presets</span>
                 </label>
               </div>
             </div>
 
-            {/* Add to History Button */}
-            <button className="add-history-button" onClick={addToHistory}>
+            {/* Apply Settings Button */}
+            <button className="add-history-button">
               <Plus className="button-icon" />
-              Add to Presets
+              Apply to Timer
             </button>
+          </form>
           </div>
         ) : (
           <div className="preset-settings">

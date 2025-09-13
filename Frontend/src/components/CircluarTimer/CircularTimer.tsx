@@ -4,7 +4,7 @@ import './CircularTimer.css';
 interface CircularTimerProps {
   progress: number;
   timeText: string;
-  sessionType: 'work' | 'shortBreak' | 'longBreak';
+  sessionType: 'work' | 'break';
   isRunning: boolean;
 }
 
@@ -19,8 +19,7 @@ const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessi
   const getSessionColor = () => {
     switch (sessionType) {
       case 'work': return '#1b5e20';
-      case 'shortBreak': return '#1b5e20'; 
-      case 'longBreak': return '#1b5e20'; 
+      case 'break': return '#1b5e20'; 
       default: return '#1b5e20';
     }
   };
@@ -28,8 +27,7 @@ const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessi
   const getGlowColor = () => {
     switch (sessionType) {
       case 'work': return 'rgba(27, 94, 32, 0.3)';
-      case 'shortBreak': return 'rgba(46, 125, 50, 0.3)';
-      case 'longBreak': return 'rgba(56, 142, 60, 0.3)';
+      case 'break': return 'rgba(46, 125, 50, 0.3)';
       default: return 'rgba(27, 94, 32, 0.3)';
     }
   };
@@ -82,8 +80,7 @@ const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessi
           {timeText}
         </div>
         <div className={`timer-label ${isRunning ? 'timer-label-running' : 'timer-label-stopped'}`}>
-          {sessionType === 'shortBreak' ? 'Short Break' : 
-           sessionType === 'longBreak' ? 'Long Break' : sessionType}
+          {sessionType === 'work' ? 'Work' : 'Break'}
         </div>
         
         {/* Inner pulse effect when running */}

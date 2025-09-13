@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
-import type { DefaultTimerSettings } from "../../interfaces/DefaultTimerSettings";
 import "./Timer.css";
 import CircularTimer from "../CircluarTimer/CircularTimer";
 import SessionSettingsContainer from "../SessionSettingsContainer/SessionSettingsContainer";
 import { Play, Pause, RotateCcw } from "lucide-react";
+import type { SessionSettings } from "../../interfaces/SessionSettings";
 
-const DEFAULT_TIMER_SETTINGS: DefaultTimerSettings = {
-  workDuration: 2,
-  shortBreakDuration: 5,
-  longBreakDuration: 15,
-  sessionsBeforeLongBreak: 4,
+const DEFAULT_TIMER_SETTINGS: SessionSettings = {
+  sessionName: "Default Session",
+  workDuration: 1,
+  breakDuration: 5,
+  sessions: 4,
+  autoStart: false
 };
 
 export default function Timer() {
@@ -18,17 +19,15 @@ export default function Timer() {
     DEFAULT_TIMER_SETTINGS.workDuration * 60
   );
   const [sessionType, setSessionType] = useState<
-    "work" | "shortBreak" | "longBreak"
+    "work" | "break"
   >("work");
 
   const getTotalDuration = () => {
     switch (sessionType) {
       case "work":
         return DEFAULT_TIMER_SETTINGS.workDuration * 60;
-      case "shortBreak":
-        return DEFAULT_TIMER_SETTINGS.shortBreakDuration * 60;
-      case "longBreak":
-        return DEFAULT_TIMER_SETTINGS.longBreakDuration * 60;
+      case "break":
+        return DEFAULT_TIMER_SETTINGS.breakDuration * 60;
       default:
         return DEFAULT_TIMER_SETTINGS.workDuration * 60;
     }
@@ -54,9 +53,9 @@ export default function Timer() {
         setRemainingTime((prevTime) => {
           if (prevTime <= 1) {
             setIsPlaying(false);
-            setSessionType(sessionType === "work" ? "shortBreak" : "work");
+            setSessionType(sessionType === "work" ? "break" : "work");
             return sessionType === "work"
-              ? DEFAULT_TIMER_SETTINGS.shortBreakDuration * 60
+              ? DEFAULT_TIMER_SETTINGS.breakDuration * 60
               : DEFAULT_TIMER_SETTINGS.workDuration * 60;
           }
           return prevTime - 1;
@@ -78,15 +77,20 @@ export default function Timer() {
     const newDuration =
       sessionType === "work"
         ? DEFAULT_TIMER_SETTINGS.workDuration * 60
-        : sessionType === "shortBreak"
-        ? DEFAULT_TIMER_SETTINGS.shortBreakDuration * 60
-        : DEFAULT_TIMER_SETTINGS.longBreakDuration * 60;
+        : sessionType === "break"
+        ? DEFAULT_TIMER_SETTINGS.breakDuration * 60
+        : DEFAULT_TIMER_SETTINGS.workDuration * 60;
     setRemainingTime(newDuration);
   };
 
   return (
     <div className="timer-wrapper">
       <div className="timer-container">
+        {/* Session Name Display */}
+        <div className="session-name-display">
+          {DEFAULT_TIMER_SETTINGS.sessionName}
+        </div>
+        
         <div className="timer-circle-overlay">
           <CircularTimer
             progress={progress}

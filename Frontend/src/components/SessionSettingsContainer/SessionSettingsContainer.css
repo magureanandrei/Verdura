@@ -1,9 +1,9 @@
 .settings-container {
-  position: fixed;
-  right: 40px;
+  position: absolute;
+  right: 100px;
   top: 55%;
   transform: translateY(-50%);
-  width: 400px;
+  width: 500px;
   height: 500px;
   border-radius: 20px;
   background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0fdfa 100%);
