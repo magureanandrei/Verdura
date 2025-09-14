@@ -1,15 +1,21 @@
-import React from 'react';
-import './CircularTimer.css';
+import React from "react";
+import "./CircularTimer.css";
 
 interface CircularTimerProps {
   progress: number;
   timeText: string;
-  sessionType: 'work' | 'break';
+  sessionType: "work" | "break";
   isRunning: boolean;
   remainingSeconds: number;
 }
 
-const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessionType, isRunning, remainingSeconds }) => {
+const CircularTimer: React.FC<CircularTimerProps> = ({
+  progress,
+  timeText,
+  sessionType,
+  isRunning,
+  remainingSeconds,
+}) => {
   const radius = 120;
   const strokeWidth = 10;
   const normalizedRadius = radius - strokeWidth * 2;
@@ -19,25 +25,42 @@ const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessi
 
   const getSessionColor = () => {
     switch (sessionType) {
-      case 'work': return '#1b5e20';
-      case 'break': return '#1b5e20'; 
-      default: return '#1b5e20';
+      case "work":
+        return "#1b5e20";
+      case "break":
+        return "#1b5e20";
+      default:
+        return "#1b5e20";
     }
   };
 
   const getGlowColor = () => {
     switch (sessionType) {
-      case 'work': return 'rgba(27, 94, 32, 0.3)';
-      case 'break': return 'rgba(46, 125, 50, 0.3)';
-      default: return 'rgba(27, 94, 32, 0.3)';
+      case "work":
+        return "rgba(27, 94, 32, 0.3)";
+      case "break":
+        return "rgba(46, 125, 50, 0.3)";
+      default:
+        return "rgba(27, 94, 32, 0.3)";
+    }
+  };
+
+  const getStaticGlowColor = () => {
+    switch (sessionType) {
+      case "work":
+        return "rgba(27, 94, 32, 0.2)";
+      case "break":
+        return "rgba(46, 125, 50, 0.2)";
+      default:
+        return "rgba(27, 94, 32, 0.2)";
     }
   };
 
   // Determine pulsing intensity based on remaining time
   const getPulsingLevel = () => {
-    if (remainingSeconds <= 10) return 'fast';  // Last 10 seconds - 1 second pulses
-    if (remainingSeconds <= 60) return 'medium'; // Last minute - 2 second pulses
-    return 'slow'; // Normal - 5 second pulses
+    if (remainingSeconds <= 10) return "fast"; // Last 10 seconds - 1 second pulses
+    if (remainingSeconds <= 60) return "medium"; // Last minute - 2 second pulses
+    return "slow"; // Normal - 5 second pulses
   };
 
   const pulsingLevel = getPulsingLevel();
@@ -45,19 +68,17 @@ const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessi
   return (
     <div className="circular-timer">
       {isRunning && (
-        <div 
+        <div
           className={`timer-glow-${pulsingLevel}`}
           style={{
-            background: `radial-gradient(circle, ${getGlowColor()} 0%, transparent 70%)`,
+            background: `radial-gradient(circle, ${
+              pulsingLevel === "slow" ? getStaticGlowColor() : getGlowColor()
+            } 0%, transparent 70%)`,
           }}
         />
       )}
-      
-      <svg
-        height={radius * 2}
-        width={radius * 2}
-        className="timer-svg"
-      >
+
+      <svg height={radius * 2} width={radius * 2} className="timer-svg">
         <circle
           stroke="#e2e8f0"
           fill="transparent"
@@ -67,15 +88,17 @@ const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessi
           cy={radius}
           className="timer-track"
         />
-        
+
         <circle
           stroke={getSessionColor()}
           fill="transparent"
           strokeWidth={strokeWidth}
           strokeDasharray={strokeDasharray}
-          style={{ 
+          style={{
             strokeDashoffset,
-            filter: isRunning ? 'drop-shadow(0 0 8px rgba(27, 94, 32, 0.4))' : 'none'
+            filter: isRunning
+              ? "drop-shadow(0 0 8px rgba(27, 94, 32, 0.4))"
+              : "none",
           }}
           strokeLinecap="round"
           r={normalizedRadius}
@@ -84,43 +107,55 @@ const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessi
           className="timer-progress"
         />
       </svg>
-      
+
       <div className="timer-content">
-        <div className={`timer-text ${isRunning ? 'timer-text-running' : 'timer-text-stopped'}`}>
+        <div
+          className={`timer-text ${
+            isRunning ? "timer-text-running" : "timer-text-stopped"
+          }`}
+        >
           {timeText}
         </div>
-        <div className={`timer-label ${isRunning ? 'timer-label-running' : 'timer-label-stopped'}`}>
-          {sessionType === 'work' ? 'Work' : 'Break'}
+        <div
+          className={`timer-label ${
+            isRunning ? "timer-label-running" : "timer-label-stopped"
+          }`}
+        >
+          {sessionType === "work" ? "Work" : "Break"}
         </div>
-        
+
         {/* Inner pulse effect when running */}
         {isRunning && (
-          <div 
+          <div
             className={`timer-pulse-${pulsingLevel}`}
             style={{
-              background: `radial-gradient(circle, ${getGlowColor()} 30%, transparent 70%)`,
+              background: `radial-gradient(circle, ${
+                pulsingLevel === "slow" ? getStaticGlowColor() : getGlowColor()
+              } 30%, transparent 70%)`,
             }}
           />
         )}
-        
       </div>
-      
+
       {/* Quarter dots around the circle (4 dots at 12, 3, 6, 9 o'clock) */}
       <div className="timer-dots">
         {[0, 1, 2, 3].map((i) => {
-          const angle = (i * 90) * (Math.PI / 180); // 90 degrees apart
+          const angle = i * 90 * (Math.PI / 180); // 90 degrees apart
           const x = radius + (radius - 25) * Math.cos(angle - Math.PI / 2);
           const y = radius + (radius - 25) * Math.sin(angle - Math.PI / 2);
-          const isActive = progress >= (i * 25); // Each quarter represents 25% progress
+          const isActive = progress >= i * 25; // Each quarter represents 25% progress
           return (
             <div
               key={i}
-              className={`timer-dot ${isActive ? 'timer-dot-active' : 'timer-dot-inactive'}`}
+              className={`timer-dot ${
+                isActive ? "timer-dot-active" : "timer-dot-inactive"
+              }`}
               style={{
                 left: x - 6,
                 top: y - 6,
-                backgroundColor: isActive ? getSessionColor() : '#cbd5e1',
-                boxShadow: isActive && isRunning ? `0 0 8px ${getGlowColor()}` : 'none'
+                backgroundColor: isActive ? getSessionColor() : "#cbd5e1",
+                boxShadow:
+                  isActive && isRunning ? `0 0 8px ${getGlowColor()}` : "none",
               }}
             />
           );
