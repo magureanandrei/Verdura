@@ -5,4 +5,5 @@ export interface SessionSettings {
   breakDuration: number;
   sessions: number;
   autoStart:boolean;
+  saveSession: boolean;
 }

@@ -5,7 +5,11 @@ import type { SessionSettings } from "../../interfaces/SessionSettings";
 import type { PresetSettings } from "../../interfaces/PresetSettings";
 import { defaultPresets } from "../../interfaces/DefaultPresets";
 
-export default function SessionSettingsContainer() {
+interface SessionSettingsContainerProps {
+  onApplySettings: (settings: SessionSettings) => void;
+}
+
+export default function SessionSettingsContainer({ onApplySettings }: SessionSettingsContainerProps) {
   const [activeTab, setActiveTab] = useState<"settings" | "presets">(
     "settings"
   );
@@ -15,9 +19,9 @@ export default function SessionSettingsContainer() {
     breakDuration: 5,
     sessions: 4,
     autoStart: true,
+    saveSession: false
   });
   const [presets, setPresets] = useState<PresetSettings[]>(defaultPresets);
-  const [saveToPresets, setSaveToPresets] = useState(false);
 
   const handleSettingChange = (
     key: keyof SessionSettings,
@@ -48,17 +52,15 @@ export default function SessionSettingsContainer() {
   const handleSettingsAddToHistory = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Apply settings to timer (your main functionality)
-    console.log("Applying settings to timer:", currentSettings);
+    onApplySettings(currentSettings);
     
     // If checkbox is checked, also save to presets
-    if (saveToPresets) {
-      //not sure what this is :(
+    if (currentSettings.saveSession) {
+      // TODO: Add save logic later
       addCustomPreset();
-      setSaveToPresets(false); // Reset checkbox after saving
+      handleSettingChange("saveSession", false); 
     }
   };
-
 
   return (
     <div className="settings-container">
@@ -181,8 +183,8 @@ export default function SessionSettingsContainer() {
                 <label className="checkbox-label">
                   <input
                     type="checkbox"
-                    checked={saveToPresets}
-                    onChange={(e) => setSaveToPresets(e.target.checked)}
+                    checked={currentSettings.saveSession}
+                    onChange={(e) => handleSettingChange("saveSession", e.target.checked)}
                     className="setting-checkbox"
                   />
                   <span className="checkbox-text">Save session to presets</span>

@@ -9,7 +9,8 @@ export const defaultPresets: PresetSettings[] = [
       workDuration: 25,
       breakDuration: 5,
       sessions: 4,
-      autoStart: true
+      autoStart: true,
+      saveSession: false
     },
   },
   {
@@ -20,7 +21,8 @@ export const defaultPresets: PresetSettings[] = [
       workDuration: 15,
       breakDuration: 3,
       sessions: 3,
-      autoStart: true
+      autoStart: true,
+      saveSession: false
     },
   },
   {
@@ -31,7 +33,8 @@ export const defaultPresets: PresetSettings[] = [
       workDuration: 50,
       breakDuration: 10,
       sessions: 2,
-      autoStart: true
+      autoStart: true,
+      saveSession: false
     },
   },
 ];

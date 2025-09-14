@@ -7,13 +7,15 @@ import type { SessionSettings } from "../../interfaces/SessionSettings";
 
 const DEFAULT_TIMER_SETTINGS: SessionSettings = {
   sessionName: "Default Session",
-  workDuration: 1,
+  workDuration: 25,
   breakDuration: 5,
   sessions: 4,
-  autoStart: false
+  autoStart: false,
+  saveSession: false
 };
 
 export default function Timer() {
+  const [timerSettings, setTimerSettings] = useState<SessionSettings>(DEFAULT_TIMER_SETTINGS);
   const [isPlaying, setIsPlaying] = useState(false);
   const [remainingTime, setRemainingTime] = useState(
     DEFAULT_TIMER_SETTINGS.workDuration * 60
@@ -22,14 +24,23 @@ export default function Timer() {
     "work" | "break"
   >("work");
 
+  const applySettingsToTimer = (settings: SessionSettings) => {
+    setTimerSettings(settings);
+    // Reset timer with new work duration
+    const newDuration = settings.workDuration * 60;
+    setRemainingTime(newDuration);
+    setIsPlaying(false);
+    setSessionType("work");
+  };
+
   const getTotalDuration = () => {
     switch (sessionType) {
       case "work":
-        return DEFAULT_TIMER_SETTINGS.workDuration * 60;
+        return timerSettings.workDuration * 60;
       case "break":
-        return DEFAULT_TIMER_SETTINGS.breakDuration * 60;
+        return timerSettings.breakDuration * 60;
       default:
-        return DEFAULT_TIMER_SETTINGS.workDuration * 60;
+        return timerSettings.workDuration * 60;
     }
   };
 
@@ -55,8 +66,8 @@ export default function Timer() {
             setIsPlaying(false);
             setSessionType(sessionType === "work" ? "break" : "work");
             return sessionType === "work"
-              ? DEFAULT_TIMER_SETTINGS.breakDuration * 60
-              : DEFAULT_TIMER_SETTINGS.workDuration * 60;
+              ? timerSettings.breakDuration * 60
+              : timerSettings.workDuration * 60;
           }
           return prevTime - 1;
         });
@@ -66,7 +77,7 @@ export default function Timer() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isPlaying, remainingTime, sessionType]);
+  }, [isPlaying, remainingTime, sessionType, timerSettings.breakDuration, timerSettings.workDuration]);
 
   const toggleTimer = () => {
     setIsPlaying(!isPlaying);
@@ -76,10 +87,10 @@ export default function Timer() {
     setIsPlaying(false);
     const newDuration =
       sessionType === "work"
-        ? DEFAULT_TIMER_SETTINGS.workDuration * 60
+        ? timerSettings.workDuration * 60
         : sessionType === "break"
-        ? DEFAULT_TIMER_SETTINGS.breakDuration * 60
-        : DEFAULT_TIMER_SETTINGS.workDuration * 60;
+        ? timerSettings.breakDuration * 60
+        : timerSettings.workDuration * 60;
     setRemainingTime(newDuration);
   };
 
@@ -88,7 +99,7 @@ export default function Timer() {
       <div className="timer-container">
         {/* Session Name Display */}
         <div className="session-name-display">
-          {DEFAULT_TIMER_SETTINGS.sessionName}
+          {timerSettings.sessionName || "Default Session"}
         </div>
         
         <div className="timer-circle-overlay">
@@ -120,7 +131,7 @@ export default function Timer() {
           </button>
         </div>
       </div>
-      <SessionSettingsContainer />
+      <SessionSettingsContainer onApplySettings={applySettingsToTimer} />
     </div>
   );
 }
