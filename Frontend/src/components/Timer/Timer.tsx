@@ -108,6 +108,7 @@ export default function Timer() {
             timeText={formatTime(remainingTime)}
             sessionType={sessionType}
             isRunning={isPlaying}
+            remainingSeconds={remainingTime}
           />
         </div>
         <div className="control-buttons">

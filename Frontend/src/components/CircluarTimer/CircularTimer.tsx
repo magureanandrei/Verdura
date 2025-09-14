@@ -6,9 +6,10 @@ interface CircularTimerProps {
   timeText: string;
   sessionType: 'work' | 'break';
   isRunning: boolean;
+  remainingSeconds: number;
 }
 
-const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessionType, isRunning }) => {
+const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessionType, isRunning, remainingSeconds }) => {
   const radius = 120;
   const strokeWidth = 10;
   const normalizedRadius = radius - strokeWidth * 2;
@@ -32,11 +33,20 @@ const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessi
     }
   };
 
+  // Determine pulsing intensity based on remaining time
+  const getPulsingLevel = () => {
+    if (remainingSeconds <= 10) return 'fast';  // Last 10 seconds - 1 second pulses
+    if (remainingSeconds <= 60) return 'medium'; // Last minute - 2 second pulses
+    return 'slow'; // Normal - 5 second pulses
+  };
+
+  const pulsingLevel = getPulsingLevel();
+
   return (
     <div className="circular-timer">
       {isRunning && (
         <div 
-          className="timer-glow"
+          className={`timer-glow-${pulsingLevel}`}
           style={{
             background: `radial-gradient(circle, ${getGlowColor()} 0%, transparent 70%)`,
           }}
@@ -84,6 +94,14 @@ const CircularTimer: React.FC<CircularTimerProps> = ({ progress, timeText, sessi
         </div>
         
         {/* Inner pulse effect when running */}
+        {isRunning && (
+          <div 
+            className={`timer-pulse-${pulsingLevel}`}
+            style={{
+              background: `radial-gradient(circle, ${getGlowColor()} 30%, transparent 70%)`,
+            }}
+          />
+        )}
         
       </div>
       

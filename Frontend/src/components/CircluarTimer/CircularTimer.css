@@ -4,14 +4,35 @@
   display: inline-block;
 }
 
-/* Outer glow ring when running */
-.timer-glow {
+/* Outer glow ring when running - three intensities */
+.timer-glow-slow {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  /* No animation - just static glow */
   filter: blur(4px);
   transform: scale(1.1);
+  transition: opacity 1.2s ease-in-out, transform 1.2s ease-in-out;
+}
+
+.timer-glow-medium {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  animation: pulse-medium 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  filter: blur(5px);
+  transform: scale(1.1);
+  transition: opacity 1.2s ease-in-out, transform 1.2s ease-in-out;
+}
+
+.timer-glow-fast {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  animation: pulse-fast 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  filter: blur(6px);
+  transform: scale(1.1);
+  transition: opacity 1.2s ease-in-out, transform 1.2s ease-in-out;
 }
 
 /* SVG Container */
@@ -41,7 +62,8 @@
 /* Timer Text */
 .timer-text {
   font-size: 36px;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas,
+    "Liberation Mono", Menlo, monospace;
   font-weight: bold;
   transition: all 0.3s;
 }
@@ -72,13 +94,32 @@
   color: #64748b;
 }
 
-/* Inner pulse effect when running */
-.timer-pulse {
+/* Inner pulse effect when running - three intensities */
+.timer-pulse-slow {
   position: absolute;
   inset: 32px;
   border-radius: 50%;
-  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
-  opacity: 0.2;
+  /* No animation - just static inner glow */
+  opacity: 0.15;
+  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+}
+
+.timer-pulse-medium {
+  position: absolute;
+  inset: 32px;
+  border-radius: 50%;
+  animation: ping-medium 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+  opacity: 0.25;
+  transition: opacity 1.2s ease-in-out, transform 1.2s ease-in-out;
+}
+
+.timer-pulse-fast {
+  position: absolute;
+  inset: 32px;
+  border-radius: 50%;
+  animation: ping-fast 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+  opacity: 0.4;
+  transition: opacity 1.2s ease-in-out, transform 1.2s ease-in-out;
 }
 
 /* Quarter dots container */
@@ -106,8 +147,69 @@
   opacity: 0.4;
 }
 
-@media (max-width: 900px){
+@media (max-width: 900px) {
   .circular-timer {
     transform: scale(0.8);
+  }
+}
+
+/* Keyframes for animations */
+@keyframes pulse-slow {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes pulse-medium {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.14);
+  }
+}
+
+@keyframes pulse-fast {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.25);
+  }
+}
+
+@keyframes ping-slow {
+  75%,
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+@keyframes ping-medium {
+  75%,
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes ping-fast {
+  75%,
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
   }
 }
