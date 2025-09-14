@@ -300,18 +300,11 @@
   transform: scale(1.05);
 }
 
-/* Responsive adjustments */
-@media (max-width: 1300px) {
-  .settings-container {
-    right: 20px;
-    width: 350px;
-  }
-}
-
 @media (max-width: 1200px) {
   .settings-container {
-    right: 20px;
-    width: 320px;
+    right: 80px;
+    width: clamp(370px, 40vw, 500px);
+    height: clamp(370px, 45vw, 500px);
   }
 }
 
@@ -321,9 +314,10 @@
     right: auto;
     top: auto;
     transform: none;
-    margin: 20px auto;
-    width: 100%;
-    max-width: 400px;
+    margin: 0 auto 30px auto;
+    width: min(400px, 90vw);
+    height: min(500px, 60vh);
+    flex-shrink: 0;
   }
 }
 

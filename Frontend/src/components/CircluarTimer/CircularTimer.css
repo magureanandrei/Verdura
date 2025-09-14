@@ -106,19 +106,8 @@
   opacity: 0.4;
 }
 
-/* Animations */
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
+@media (max-width: 900px){
+  .circular-timer {
+    transform: scale(0.8);
   }
 }
