@@ -10,25 +10,28 @@ public class UserSettings{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "settings_id", nullable = false, unique = true)
     Long id;
-    @Column(name = "default_work_duration", nullable = false)
-    private Integer defaultWorkDuration = 25;
-    @Column(name = "default_break_duration", nullable = false)
-    private Integer defaultBreakDuration = 5;
-    @Column(name = "default_long_break_duration", nullable = false)
-    private Integer defaultLongBreakDuration = 15;
-    @Column(name = "pomodoros_until_long_break", nullable = false)
-    private Integer sessionsUntilLongBreak = 4;
+    @Column(name = "session_name", nullable = false)
+    private String sessionName;
+    @Column(name = "work_duration", nullable = false)
+    private Integer workDuration;
+    @Column(name = "break_duration", nullable = false)
+    private Integer breakDuration;
+    @Column(name = "sessions", nullable = false)
+    private Integer sessions;
+    @Column(name = "auto_start", nullable = false)
+    private Boolean autoStart;
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     User user;
 
     public UserSettings() {}
 
-    public UserSettings( Integer defaultWorkDuration, Integer defaultBreakDuration, Integer defaultLongBreakDuration, Integer sessionsUntilLongBreak, User user) {
-        this.defaultWorkDuration = defaultWorkDuration;
-        this.defaultBreakDuration = defaultBreakDuration;
-        this.defaultLongBreakDuration = defaultLongBreakDuration;
-        this.sessionsUntilLongBreak = sessionsUntilLongBreak;
+    public UserSettings( String sessionName, Integer workDuration, Integer breakDuration, Integer sessions,Boolean autoStart, User user) {
+        this.sessionName = sessionName;
+        this.workDuration = workDuration;
+        this.breakDuration = breakDuration;
+        this.sessions=sessions;
+        this.autoStart=autoStart;
         this.user = user;
     }
 
@@ -39,37 +42,35 @@ public class UserSettings{
     public void setId(Long id) {
         this.id = id;
     }
+    public String getSessionName() {
+        return sessionName;
+    }
+    public void setSessionName(String sessionName) {
+        this.sessionName = sessionName;
+    }
 
-    public Integer getDefaultWorkDuration() {
-        return defaultWorkDuration;
+    public Integer getWorkDuration() {
+        return workDuration;
     }
 
     public void setDefaultWorkDuration(Integer defaultWorkDuration) {
-        this.defaultWorkDuration = defaultWorkDuration;
+        this.workDuration = defaultWorkDuration;
     }
 
     public Integer getDefaultBreakDuration() {
-        return defaultBreakDuration;
+        return breakDuration;
     }
 
     public void setDefaultBreakDuration(Integer defaultBreakDuration) {
-        this.defaultBreakDuration = defaultBreakDuration;
+        this.breakDuration = defaultBreakDuration;
     }
 
-    public Integer getDefaultLongBreakDuration() {
-        return defaultLongBreakDuration;
+    public Integer getSessions() {
+        return sessions;
     }
 
-    public void setDefaultLongBreakDuration(Integer defaultLongBreakDuration) {
-        this.defaultLongBreakDuration = defaultLongBreakDuration;
-    }
-
-    public Integer getSessionsUntilLongBreak() {
-        return sessionsUntilLongBreak;
-    }
-
-    public void setSessionsUntilLongBreak(Integer sessionsUntilLongBreak) {
-        this.sessionsUntilLongBreak = sessionsUntilLongBreak;
+    public void setSessions(Integer sessions) {
+        this.sessions = sessions;
     }
 
     public User getUser() {
@@ -82,13 +83,8 @@ public class UserSettings{
 
     @Override
     public String toString() {
-        return "UserSettings{" +
-                "id=" + id +
-                ", defaultWorkDuration=" + defaultWorkDuration +
-                ", defaultBreakDuration=" + defaultBreakDuration +
-                ", defaultLongBreakDuration=" + defaultLongBreakDuration +
-                ", sessionsUntilLongBreak=" + sessionsUntilLongBreak +
-                ", user=" + user +
-                '}';
+        return "UserSettings [id=" + id +  ", sessionName=" + sessionName +
+        ", workDuration=" + workDuration + ", breakDuration=" + breakDuration
+                + ", sessions=" + sessions + ", autoStart=" + autoStart + ", user=" + user + "]";
     }
 }
