@@ -7,10 +7,10 @@ import type { SessionSettings } from "../../interfaces/SessionSettings";
 
 const DEFAULT_TIMER_SETTINGS: SessionSettings = {
   sessionName: "Default Session",
-  workDuration: 25,
+  workDuration: 0.5,
   breakDuration: 5,
   sessions: 4,
-  autoStart: false,
+  autoStart: true,
   saveSession: false
 };
 
@@ -63,11 +63,21 @@ export default function Timer() {
       interval = window.setInterval(() => {
         setRemainingTime((prevTime) => {
           if (prevTime <= 1) {
-            setIsPlaying(false);
-            setSessionType(sessionType === "work" ? "break" : "work");
-            return sessionType === "work"
-              ? timerSettings.breakDuration * 60
-              : timerSettings.workDuration * 60;
+            // Timer has finished, switch session type
+            const nextSessionType = sessionType === "work" ? "break" : "work";
+            setSessionType(nextSessionType);
+            
+            // Set new duration for next session
+            const nextDuration = nextSessionType === "work"
+              ? timerSettings.workDuration * 60
+              : timerSettings.breakDuration * 60;
+            
+            // Auto-start logic: keep playing if auto-start is enabled, otherwise pause
+            if (!timerSettings.autoStart) {
+              setIsPlaying(false);
+            }
+            
+            return nextDuration;
           }
           return prevTime - 1;
         });
@@ -77,7 +87,7 @@ export default function Timer() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isPlaying, remainingTime, sessionType, timerSettings.breakDuration, timerSettings.workDuration]);
+  }, [isPlaying, remainingTime, sessionType, timerSettings.breakDuration, timerSettings.workDuration, timerSettings.autoStart]);
 
   const toggleTimer = () => {
     setIsPlaying(!isPlaying);
