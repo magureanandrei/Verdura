@@ -1,6 +1,8 @@
 package com.verdura.Models;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -22,6 +24,7 @@ public class UserSettings{
     private Boolean autoStart;
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     User user;
 
     public UserSettings() {}
@@ -71,6 +74,14 @@ public class UserSettings{
 
     public void setSessions(Integer sessions) {
         this.sessions = sessions;
+    }
+
+    public Boolean getAutoStart() {
+        return autoStart;
+    }
+
+    public void setAutoStart(Boolean autoStart) {
+        this.autoStart = autoStart;
     }
 
     public User getUser() {

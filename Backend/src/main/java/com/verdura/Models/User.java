@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "users")
 public class User{
@@ -25,6 +27,7 @@ public class User{
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<PomodoroSession> sessions= new ArrayList<>();
     @OneToOne(mappedBy ="user", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private UserSettings settings;
 
     public User() {}

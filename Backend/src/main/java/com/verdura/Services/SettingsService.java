@@ -16,9 +16,9 @@ public class SettingsService {
         this.settingsRepo = settingsRepo;
     }
 
-        UserSettings createSettings(UserSettings settings) {
+    public UserSettings createSettings(UserSettings settings) {
         return settingsRepo.save(settings);
-        }
+    }
     public UserSettings getSettings(Long id) {
         return settingsRepo.findById(id).orElse(null);
     }
@@ -41,11 +41,12 @@ public class SettingsService {
     public UserSettings getUserSettingsByUserId(Long userId) {
         return settingsRepo.findByUser_Id(userId);
     }
-    public UserSettings updateDefaultSettings(UserSettings settings, Integer workDuration, Integer breakDuration, Integer longBreakDuration, Integer sessionsUntilLongBreak) {
+    public UserSettings updateDefaultSettings(UserSettings settings, String sessionName, Integer workDuration, Integer breakDuration, Integer sessions, Boolean autoStart) {
+        settings.setSessionName(sessionName);
         settings.setDefaultWorkDuration(workDuration);
         settings.setDefaultBreakDuration(breakDuration);
-        settings.setDefaultLongBreakDuration(longBreakDuration);
-        settings.setSessionsUntilLongBreak(sessionsUntilLongBreak);
+        settings.setSessions(sessions);
+        settings.setAutoStart(autoStart);
         return settingsRepo.save(settings);
     }
 
