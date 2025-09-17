@@ -2,7 +2,6 @@ package com.verdura.Controllers;
 
 import java.util.List;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +45,8 @@ public class SettingsController {
         userSettings.setSessions(settingsDTO.getSessions());
         userSettings.setAutoStart(settingsDTO.getAutoStart());
         userSettings.setUser(user);
-        user.setSettings(userSettings);                                    
+        List<UserSettings> settingsList = List.of(userSettings);
+        user.setSettings(settingsList);                                    
         return settingsService.createSettings(userSettings);
         //this way means we'll have to send the user from frontend too
     }

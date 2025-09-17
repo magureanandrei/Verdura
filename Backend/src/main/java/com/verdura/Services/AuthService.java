@@ -5,6 +5,9 @@ import com.verdura.Models.Roles;
 import com.verdura.Repos.RoleRepo;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,6 +51,7 @@ public class AuthService {
         String encodedPassword = passwordEncoder.encode(password);
         UserSettings userSettings = new UserSettings();
         User user = new User();
+        List<UserSettings> settingsList = List.of(userSettings);
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(encodedPassword);
@@ -57,7 +61,7 @@ public class AuthService {
             .orElseThrow(() -> new RuntimeException("Default user role not found"));
         user.setRole(userRole);
 
-        user.setSettings(userSettings);
+        user.setSettings(settingsList);
         userSettings.setUser(user);
 
         return userService.createUser(user);

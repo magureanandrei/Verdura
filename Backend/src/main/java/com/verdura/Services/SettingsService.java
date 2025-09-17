@@ -1,6 +1,8 @@
 package com.verdura.Services;
 
+import com.verdura.DTOs.SessionSettingsDTO;
 import com.verdura.Repos.SettingsRepo;
+import com.verdura.Models.User;
 import com.verdura.Models.UserSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,8 +40,15 @@ public class SettingsService {
     public List<UserSettings> getAllSettings() {
         return settingsRepo.findAll();
     }
+    
+    public List<UserSettings> getAllSettingsForUser(Long userId) {
+        return settingsRepo.findAllByUser_Id(userId);
+    }
+    
     public UserSettings getUserSettingsByUserId(Long userId) {
-        return settingsRepo.findByUser_Id(userId);
+        // This method now returns the first settings for a user (for backward compatibility)
+        List<UserSettings> userSettings = settingsRepo.findAllByUser_Id(userId);
+        return userSettings.isEmpty() ? null : userSettings.get(0);
     }
     public UserSettings updateDefaultSettings(UserSettings settings, String sessionName, Integer workDuration, Integer breakDuration, Integer sessions, Boolean autoStart) {
         settings.setSessionName(sessionName);

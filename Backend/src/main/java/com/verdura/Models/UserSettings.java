@@ -22,7 +22,7 @@ public class UserSettings{
     private Integer sessions;
     @Column(name = "auto_start", nullable = false)
     private Boolean autoStart;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     User user;

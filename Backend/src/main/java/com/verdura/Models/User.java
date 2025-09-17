@@ -26,13 +26,13 @@ public class User{
     private Roles role;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<PomodoroSession> sessions= new ArrayList<>();
-    @OneToOne(mappedBy ="user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private UserSettings settings;
+    private List<UserSettings> settings = new ArrayList<>();
 
     public User() {}
 
-    public User(String username, String password, String email, List<PomodoroSession> sessions, UserSettings settings) {
+    public User(String username, String password, String email, List<PomodoroSession> sessions, List<UserSettings> settings) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -88,11 +88,11 @@ public class User{
         this.sessions = sessions;
     }
 
-    public UserSettings getSettings() {
+    public List<UserSettings> getSettings() {
         return settings;
     }
 
-    public void setSettings(UserSettings settings) {
+    public void setSettings(List<UserSettings> settings) {
         this.settings = settings;
     }
 
