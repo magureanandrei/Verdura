@@ -1,8 +1,6 @@
 package com.verdura.Services;
 
-import com.verdura.DTOs.SessionSettingsDTO;
 import com.verdura.Repos.SettingsRepo;
-import com.verdura.Models.User;
 import com.verdura.Models.UserSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

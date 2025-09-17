@@ -2,8 +2,11 @@ import { useState } from "react";
 import { Settings, History, Plus } from "lucide-react";
 import "./SessionSettingsContainer.css";
 import type { SessionSettings } from "../../interfaces/SessionSettings";
+import type { SessionSettingsDTO } from "../../interfaces/SessionSettingsDTO";
 import type { PresetSettings } from "../../interfaces/PresetSettings";
 import { defaultPresets } from "../../interfaces/DefaultPresets";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 interface SessionSettingsContainerProps {
   onApplySettings: (settings: SessionSettings) => void;
@@ -38,7 +41,7 @@ export default function SessionSettingsContainer({ onApplySettings }: SessionSet
   };
 
   const addCustomPreset = () => {
-    const name = prompt("Enter preset name:");
+    const name = currentSettings.sessionName;
     if (name && name.trim()) {
       const newPreset: PresetSettings = {
         id: Date.now().toString(),
@@ -49,18 +52,56 @@ export default function SessionSettingsContainer({ onApplySettings }: SessionSet
     }
   };
 
-  const handleSettingsAddToHistory = (e: React.FormEvent) => {
+  const handleSettingsAddToHistory = async (e: React.FormEvent) => {
     e.preventDefault();
     
     onApplySettings(currentSettings);
     
     // If checkbox is checked, also save to presets
     if (currentSettings.saveSession) {
-      // TODO: Add save logic later
-      addCustomPreset();
-      handleSettingChange("saveSession", false); 
+      try {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+          console.error('User ID not found in local storage.');
+          return;
+        }
+        
+        try {
+            const settingsDTO: SessionSettingsDTO = {
+              sessionName: currentSettings.sessionName,
+              workDuration: currentSettings.workDuration,
+              breakDuration: currentSettings.breakDuration,
+              sessions: currentSettings.sessions,
+              autoStart: currentSettings.autoStart,
+            };
+            
+            const response = await axios.post(`http://localhost:8080/settings/create/${userId}`, settingsDTO);
+            if (response.status === 200) {                
+                toast.success(`Settings saved successfully!`);
+            }
+        } catch (error) {
+            console.error("Saving failed", error);
+            toast.error("Saving settings failed. Please try again.");
+        }
+        
+        console.log('Settings saved to backend:', currentSettings);
+        
+        // Also add to local presets for immediate UI feedback
+        addCustomPreset();
+        
+        // Reset the checkbox
+        handleSettingChange("saveSession", false);
+      } catch (error) {
+        console.error('Failed to save settings to backend:', error);
+        
+        // Still add to local presets as fallback
+        addCustomPreset();
+        handleSettingChange("saveSession", false);
+      }
     }
   };
+
+  
 
   return (
     <div className="settings-container">

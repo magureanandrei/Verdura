@@ -1,12 +1,10 @@
 package com.verdura.Services;
 import com.verdura.Models.User;
-import com.verdura.Models.UserSettings;
 import com.verdura.Models.Roles;
 import com.verdura.Repos.RoleRepo;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -49,9 +47,7 @@ public class AuthService {
         emailValidators.validateEmail(email);
         passwordValidators.validatePassword(password);
         String encodedPassword = passwordEncoder.encode(password);
-        UserSettings userSettings = new UserSettings();
         User user = new User();
-        List<UserSettings> settingsList = List.of(userSettings);
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(encodedPassword);
@@ -60,10 +56,6 @@ public class AuthService {
         Roles userRole = roleRepository.findById(1L)
             .orElseThrow(() -> new RuntimeException("Default user role not found"));
         user.setRole(userRole);
-
-        user.setSettings(settingsList);
-        userSettings.setUser(user);
-
         return userService.createUser(user);
     }
 
