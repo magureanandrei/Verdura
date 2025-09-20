@@ -43,15 +43,14 @@ public class SettingsService {
         return settingsRepo.findAllByUser_Id(userId);
     }
     
-    public UserSettings getUserSettingsByUserId(Long userId) {
-        // This method now returns the first settings for a user (for backward compatibility)
+    public List<UserSettings> getUserSettingsByUserId(Long userId) {
         List<UserSettings> userSettings = settingsRepo.findAllByUser_Id(userId);
-        return userSettings.isEmpty() ? null : userSettings.get(0);
+        return userSettings;
     }
     public UserSettings updateDefaultSettings(UserSettings settings, String sessionName, Integer workDuration, Integer breakDuration, Integer sessions, Boolean autoStart) {
         settings.setSessionName(sessionName);
-        settings.setDefaultWorkDuration(workDuration);
-        settings.setDefaultBreakDuration(breakDuration);
+        settings.setWorkDuration(workDuration);
+        settings.setBreakDuration(breakDuration);
         settings.setSessions(sessions);
         settings.setAutoStart(autoStart);
         return settingsRepo.save(settings);

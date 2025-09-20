@@ -56,15 +56,15 @@ public class UserSettings{
         return workDuration;
     }
 
-    public void setDefaultWorkDuration(Integer defaultWorkDuration) {
+    public void setWorkDuration(Integer defaultWorkDuration) {
         this.workDuration = defaultWorkDuration;
     }
 
-    public Integer getDefaultBreakDuration() {
+    public Integer getBreakDuration() {
         return breakDuration;
     }
 
-    public void setDefaultBreakDuration(Integer defaultBreakDuration) {
+    public void setBreakDuration(Integer defaultBreakDuration) {
         this.breakDuration = defaultBreakDuration;
     }
 

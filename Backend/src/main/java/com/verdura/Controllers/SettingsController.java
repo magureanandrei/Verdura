@@ -40,8 +40,8 @@ public class SettingsController {
         User user = userService.getUserById(userId);
         UserSettings userSettings = new UserSettings();
         userSettings.setSessionName(settingsDTO.getSessionName());
-        userSettings.setDefaultWorkDuration(settingsDTO.getWorkDuration());
-        userSettings.setDefaultBreakDuration(settingsDTO.getBreakDuration());
+        userSettings.setWorkDuration(settingsDTO.getWorkDuration());
+        userSettings.setBreakDuration(settingsDTO.getBreakDuration());
         userSettings.setSessions(settingsDTO.getSessions());
         userSettings.setAutoStart(settingsDTO.getAutoStart());
         userSettings.setUser(user);
@@ -52,10 +52,20 @@ public class SettingsController {
     }
 
     @GetMapping("/user/{userId}")
-    public UserSettings getUserSettingsByUserId(@PathVariable Long userId) {
-        return settingsService.getUserSettingsByUserId(userId);
+    public List<SessionSettingsDTO> getUserSettingsByUserId(@PathVariable Long userId) {
+        List<UserSettings> userSettings = settingsService.getUserSettingsByUserId(userId);
+        
+        return userSettings.stream()
+            .map(settings -> {
+                SessionSettingsDTO dto = new SessionSettingsDTO();
+                dto.setSessionName(settings.getSessionName());
+                dto.setWorkDuration(settings.getWorkDuration());
+                dto.setBreakDuration(settings.getBreakDuration());
+                dto.setSessions(settings.getSessions());
+                dto.setAutoStart(settings.getAutoStart());
+                return dto;
+            })
+            .toList();
     }
-
-    
 
 }
