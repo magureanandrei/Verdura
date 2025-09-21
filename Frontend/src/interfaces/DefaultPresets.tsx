@@ -1,4 +1,4 @@
-import type { PresetSettings } from "./PresetSettings";
+import type { PresetSettings } from "./SavedSessionsSettings";
 
 export const defaultPresets: PresetSettings[] = [
   {
@@ -10,7 +10,7 @@ export const defaultPresets: PresetSettings[] = [
       breakDuration: 5,
       sessions: 4,
       autoStart: true,
-      saveSession: false
+      saveSession: false,
     },
   },
   {
@@ -22,7 +22,7 @@ export const defaultPresets: PresetSettings[] = [
       breakDuration: 3,
       sessions: 3,
       autoStart: true,
-      saveSession: false
+      saveSession: false,
     },
   },
   {
@@ -34,7 +34,7 @@ export const defaultPresets: PresetSettings[] = [
       breakDuration: 10,
       sessions: 2,
       autoStart: true,
-      saveSession: false
+      saveSession: false,
     },
   },
 ];

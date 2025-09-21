@@ -1,24 +1,24 @@
 import { useState, useEffect } from "react";
 import { Settings, History, Plus } from "lucide-react";
 import "./SessionSettingsContainer.css";
-import type { SessionSettings } from "../../interfaces/SessionSettings";
+import type { CustomSettings } from "../../interfaces/CustomSettings";
 import type { SessionSettingsDTO } from "../../interfaces/SessionSettingsDTO";
-import type { PresetSettings } from "../../interfaces/PresetSettings";
+import type { SavedSessionSettings } from "../../interfaces/SavedSessionsSettings";
 import { defaultPresets } from "../../interfaces/DefaultPresets";
 import axios from "axios";
 import { toast } from "react-toastify";
 
 interface SessionSettingsContainerProps {
-  onApplySettings: (settings: SessionSettings) => void;
+  onApplySettings: (settings: CustomSettings) => void;
 }
 
 export default function SessionSettingsContainer({
   onApplySettings,
 }: SessionSettingsContainerProps) {
-  const [activeTab, setActiveTab] = useState<"settings" | "presets">(
-    "settings"
+  const [activeTab, setActiveTab] = useState<"custom" | "savedSessions">(
+    "custom"
   );
-  const [currentSettings, setCurrentSettings] = useState<SessionSettings>({
+  const [currentCustom, setCurrentCustom] = useState<CustomSettings>({
     sessionName: "",
     workDuration: 25,
     breakDuration: 5,
@@ -26,46 +26,46 @@ export default function SessionSettingsContainer({
     autoStart: true,
     saveSession: false,
   });
-  const [presets, setPresets] = useState<PresetSettings[]>(defaultPresets);
+  const [savedSessions, setSavedSessions] =
+    useState<SavedSessionSettings[]>(defaultPresets);
 
-  // Auto-load saved presets when component mounts
   useEffect(() => {
-    fetchSettings();
+    fetchSavedSettings();
   }, []);
 
-  const handleSettingChange = (
-    key: keyof SessionSettings,
+  const handleCustomSettingChange = (
+    key: keyof CustomSettings,
     value: number | boolean | string
   ) => {
-    setCurrentSettings((prev) => ({
+    setCurrentCustom((prev) => ({
       ...prev,
       [key]: value,
     }));
   };
 
-  const applyPreset = (preset: PresetSettings) => {
-    setCurrentSettings(preset.settings);
+  const applySavedSession = (savedSession: SavedSessionSettings) => {
+    setCurrentCustom(savedSession.settings);
   };
 
-  const addCustomPreset = () => {
-    const name = currentSettings.sessionName;
-    if (name && name.trim()) {
-      const newPreset: PresetSettings = {
-        id: Date.now().toString(),
-        name: name.trim(),
-        settings: { ...currentSettings },
-      };
-      setPresets((prev) => [...prev, newPreset]);
-    }
-  };
+  // const addCustomSavedSession = () => {
+  //   const name = currentCustom.sessionName;
+  //   if (name && name.trim()) {
+  //     const newSavedSession: SavedSessionSettings = {
+  //       id: Date.now().toString(),
+  //       name: name.trim(),
+  //       settings: { ...currentCustom },
+  //     };
+  //     setSavedSessions((prev) => [...prev, newSavedSession]);
+  //   }
+  // };
 
-  const handleSettingsAddToHistory = async (e: React.FormEvent) => {
+  const handleSaveSession = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    onApplySettings(currentSettings);
+    onApplySettings(currentCustom);
 
-    // If checkbox is checked, also save to presets
-    if (currentSettings.saveSession) {
+    // If checkbox is checked, also save to saved sessions
+    if (currentCustom.saveSession) {
       try {
         const userId = localStorage.getItem("userId");
         if (!userId) {
@@ -75,11 +75,11 @@ export default function SessionSettingsContainer({
 
         try {
           const settingsDTO: SessionSettingsDTO = {
-            sessionName: currentSettings.sessionName,
-            workDuration: currentSettings.workDuration,
-            breakDuration: currentSettings.breakDuration,
-            sessions: currentSettings.sessions,
-            autoStart: currentSettings.autoStart,
+            sessionName: currentCustom.sessionName,
+            workDuration: currentCustom.workDuration,
+            breakDuration: currentCustom.breakDuration,
+            sessions: currentCustom.sessions,
+            autoStart: currentCustom.autoStart,
           };
 
           const response = await axios.post(
@@ -94,24 +94,24 @@ export default function SessionSettingsContainer({
           toast.error("Saving settings failed. Please try again.");
         }
 
-        console.log("Settings saved to backend:", currentSettings);
+        console.log("Settings saved to backend:", currentCustom);
 
-        // Also add to local presets for immediate UI feedback
-        addCustomPreset();
+        // Also add to local saved sessions for immediate UI feedback
+        addCustomSavedSession();
 
         // Reset the checkbox
-        handleSettingChange("saveSession", false);
+        handleCustomSettingChange("saveSession", false);
       } catch (error) {
         console.error("Failed to save settings to backend:", error);
 
-        // Still add to local presets as fallback
-        addCustomPreset();
-        handleSettingChange("saveSession", false);
+        // Still add to local saved sessions as fallback
+        addCustomSavedSession();
+        handleCustomSettingChange("saveSession", false);
       }
     }
   };
 
-  const fetchSettings = async () => {
+  const fetchSavedSettings = async () => {
     const userId = localStorage.getItem("userId");
     if (!userId) {
       console.error("User ID not found in local storage.");
@@ -123,8 +123,8 @@ export default function SessionSettingsContainer({
       );
       if (response.status === 200) {
         console.log("Raw backend response:", response.data); // Debug log
-        
-        const settingsFromBackend = response.data.map((dto) => {
+
+        const customSettingsFromBackend = response.data.map((dto) => {
           console.log("Processing DTO:", dto); // Debug each DTO
           return {
             sessionName: dto.sessionName,
@@ -135,18 +135,18 @@ export default function SessionSettingsContainer({
             saveSession: false,
           };
         });
-        
-        console.log("Mapped settings:", settingsFromBackend); // Debug mapped data
-        
-        const backendPresets = settingsFromBackend.map((settings, index) => ({
+
+        console.log("Mapped settings:", customSettingsFromBackend); // Debug mapped data
+
+        const backendSavedSessions = customSettingsFromBackend.map((settings, index) => ({
           id: `backend-${index}`,
-          name: settings.sessionName || `Preset ${index + 1}`,
+          name: settings.sessionName || `Saved Session ${index + 1}`,
           settings,
         }));
-        
-        console.log("Final presets:", backendPresets); // Debug final presets
-        
-        setPresets((prev) => [...prev, ...backendPresets]);
+
+        console.log("Final saved sessions:", backendSavedSessions); // Debug final saved sessions
+
+        setSavedSessions((prev) => [...prev, ...backendSavedSessions]);
       }
     } catch (error) {
       console.error("Failed to fetch settings from backend:", error);
@@ -159,37 +159,37 @@ export default function SessionSettingsContainer({
       {/* Tab Navigation */}
       <div className="settings-tabs">
         <button
-          className={`tab-button ${activeTab === "settings" ? "active" : ""}`}
-          onClick={() => setActiveTab("settings")}
+          className={`tab-button ${activeTab === "savedSessions" ? "active" : ""}`}
+          onClick={() => setActiveTab("savedSessions")}
         >
           <Settings className="tab-icon" />
-          Session Settings
+          Custom Session
         </button>
         <button
-          className={`tab-button ${activeTab === "presets" ? "active" : ""}`}
-          onClick={() => setActiveTab("presets")}
+          className={`tab-button ${activeTab === "savedSessions" ? "active" : ""}`}
+          onClick={() => setActiveTab("savedSessions")}
         >
           <History className="tab-icon" />
-          Preset Settings
+          Saved Sessions
         </button>
       </div>
 
       {/* Tab Content */}
       <div className="settings-content">
-        {activeTab === "settings" ? (
+        {activeTab === "custom" ? (
           <div className="session-settings">
             <h3 className="settings-title">Timer Configuration</h3>
 
             {/* Session Name */}
-            <form onSubmit={handleSettingsAddToHistory}>
+            <form onSubmit={handleSaveSession}>
               <div className="setting-group">
                 <label className="setting-label">Session Name</label>
                 <input
                   type="text"
                   placeholder="Enter session name"
-                  value={currentSettings.sessionName}
+                  value={currentCustom.sessionName}
                   onChange={(e) =>
-                    handleSettingChange("sessionName", e.target.value)
+                    handleCustomSettingChange("sessionName", e.target.value)
                   }
                   className="setting-input"
                 />
@@ -199,16 +199,16 @@ export default function SessionSettingsContainer({
               <div className="duration-settings">
                 <div className="setting-group">
                   <label className="setting-label">
-                    Work Duration: {currentSettings.workDuration} minutes
+                    Work Duration: {currentCustom.workDuration} minutes
                   </label>
                   <input
                     type="range"
                     min="5"
                     max="90"
                     step="1"
-                    value={currentSettings.workDuration}
+                    value={currentCustom.workDuration}
                     onChange={(e) =>
-                      handleSettingChange(
+                      handleCustomSettingChange(
                         "workDuration",
                         parseInt(e.target.value)
                       )
@@ -219,16 +219,16 @@ export default function SessionSettingsContainer({
 
                 <div className="setting-group">
                   <label className="setting-label">
-                    Break Duration: {currentSettings.breakDuration} minutes
+                    Break Duration: {currentCustom.breakDuration} minutes
                   </label>
                   <input
                     type="range"
                     min="1"
                     max="30"
                     step="1"
-                    value={currentSettings.breakDuration}
+                    value={currentCustom.breakDuration}
                     onChange={(e) =>
-                      handleSettingChange(
+                      handleCustomSettingChange(
                         "breakDuration",
                         parseInt(e.target.value)
                       )
@@ -239,16 +239,16 @@ export default function SessionSettingsContainer({
 
                 <div className="setting-group">
                   <label className="setting-label">
-                    Sessions: {currentSettings.sessions}
+                    Sessions: {currentCustom.sessions}
                   </label>
                   <input
                     type="range"
                     min="1"
                     max="10"
                     step="1"
-                    value={currentSettings.sessions}
+                    value={currentCustom.sessions}
                     onChange={(e) =>
-                      handleSettingChange("sessions", parseInt(e.target.value))
+                      handleCustomSettingChange("sessions", parseInt(e.target.value))
                     }
                     className="setting-range"
                   />
@@ -261,9 +261,9 @@ export default function SessionSettingsContainer({
                   <label className="checkbox-label">
                     <input
                       type="checkbox"
-                      checked={currentSettings.autoStart}
+                      checked={currentCustom.autoStart}
                       onChange={(e) =>
-                        handleSettingChange("autoStart", e.target.checked)
+                        handleCustomSettingChange("autoStart", e.target.checked)
                       }
                       className="setting-checkbox"
                     />
@@ -275,15 +275,13 @@ export default function SessionSettingsContainer({
                   <label className="checkbox-label">
                     <input
                       type="checkbox"
-                      checked={currentSettings.saveSession}
+                      checked={currentCustom.saveSession}
                       onChange={(e) =>
-                        handleSettingChange("saveSession", e.target.checked)
+                        handleCustomSettingChange("saveSession", e.target.checked)
                       }
                       className="setting-checkbox"
                     />
-                    <span className="checkbox-text">
-                      Save session to presets
-                    </span>
+                    <span className="checkbox-text">Save this Session</span>
                   </label>
                 </div>
               </div>
@@ -296,33 +294,33 @@ export default function SessionSettingsContainer({
             </form>
           </div>
         ) : (
-          <div className="preset-settings">
-            <h3 className="settings-title">Preset Configurations</h3>
+          <div className="saved-sessions-settings">
+            <h3 className="settings-title">Saved Session Configurations</h3>
 
-            <div className="presets-list">
-              {presets.map((preset) => (
-                <div key={preset.id} className="preset-item">
-                  <div className="preset-info">
-                    <h4 className="preset-name">{preset.name}</h4>
-                    <div className="preset-details">
-                      {preset.settings.workDuration}m /{" "}
-                      {preset.settings.breakDuration}m /{" "}
-                      {preset.settings.sessions} sessions
+            <div className="saved-sessions-list">
+              {savedSessions.map((savedSession) => (
+                <div key={savedSession.id} className="saved-session-item">
+                  <div className="saved-session-info">
+                    <h4 className="saved-session-name">{savedSession.name}</h4>
+                    <div className="saved-session-details">
+                      {savedSession.settings.workDuration}m /{" "}
+                      {savedSession.settings.breakDuration}m /{" "}
+                      {savedSession.settings.sessions} sessions
                     </div>
                   </div>
                   <button
-                    className="apply-preset-button"
-                    onClick={() => applyPreset(preset)}
+                    className="apply-saved-session-button"
+                    onClick={() => applySavedSession(savedSession)}
                   >
-                    Apply
+                    Use
                   </button>
                 </div>
               ))}
             </div>
 
-            <button className="add-preset-button" onClick={addCustomPreset}>
+            <button className="add-saved-session-button" onClick={addCustomSavedSession}>
               <Plus className="button-icon" />
-              Save Current as Preset
+              Save Current Timer
             </button>
           </div>
         )}

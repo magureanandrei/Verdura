@@ -3,28 +3,28 @@ import "./Timer.css";
 import CircularTimer from "../CircluarTimer/CircularTimer";
 import SessionSettingsContainer from "../SessionSettingsContainer/SessionSettingsContainer";
 import { Play, Pause, RotateCcw } from "lucide-react";
-import type { SessionSettings } from "../../interfaces/SessionSettings";
+import type { CustomSettings } from "../../interfaces/CustomSettings";
 
-const DEFAULT_TIMER_SETTINGS: SessionSettings = {
+const DEFAULT_TIMER_SETTINGS: CustomSettings = {
   sessionName: "Default Session",
   workDuration: 0.5,
   breakDuration: 5,
   sessions: 4,
   autoStart: true,
-  saveSession: false
+  saveSession: false,
 };
 
 export default function Timer() {
-  const [timerSettings, setTimerSettings] = useState<SessionSettings>(DEFAULT_TIMER_SETTINGS);
+  const [timerSettings, setTimerSettings] = useState<CustomSettings>(
+    DEFAULT_TIMER_SETTINGS
+  );
   const [isPlaying, setIsPlaying] = useState(false);
   const [remainingTime, setRemainingTime] = useState(
     DEFAULT_TIMER_SETTINGS.workDuration * 60
   );
-  const [sessionType, setSessionType] = useState<
-    "work" | "break"
-  >("work");
+  const [sessionType, setSessionType] = useState<"work" | "break">("work");
 
-  const applySettingsToTimer = (settings: SessionSettings) => {
+  const applySettingsToTimer = (settings: CustomSettings) => {
     setTimerSettings(settings);
     // Reset timer with new work duration
     const newDuration = settings.workDuration * 60;
@@ -66,17 +66,18 @@ export default function Timer() {
             // Timer has finished, switch session type
             const nextSessionType = sessionType === "work" ? "break" : "work";
             setSessionType(nextSessionType);
-            
+
             // Set new duration for next session
-            const nextDuration = nextSessionType === "work"
-              ? timerSettings.workDuration * 60
-              : timerSettings.breakDuration * 60;
-            
+            const nextDuration =
+              nextSessionType === "work"
+                ? timerSettings.workDuration * 60
+                : timerSettings.breakDuration * 60;
+
             // Auto-start logic: keep playing if auto-start is enabled, otherwise pause
             if (!timerSettings.autoStart) {
               setIsPlaying(false);
             }
-            
+
             return nextDuration;
           }
           return prevTime - 1;
@@ -87,7 +88,14 @@ export default function Timer() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isPlaying, remainingTime, sessionType, timerSettings.breakDuration, timerSettings.workDuration, timerSettings.autoStart]);
+  }, [
+    isPlaying,
+    remainingTime,
+    sessionType,
+    timerSettings.breakDuration,
+    timerSettings.workDuration,
+    timerSettings.autoStart,
+  ]);
 
   const toggleTimer = () => {
     setIsPlaying(!isPlaying);
@@ -111,7 +119,7 @@ export default function Timer() {
         <div className="session-name-display">
           {timerSettings.sessionName || "Default Session"}
         </div>
-        
+
         <div className="timer-circle-overlay">
           <CircularTimer
             progress={progress}
