@@ -202,8 +202,7 @@
 }
 
 /* Buttons */
-.add-history-button,
-.add-preset-button {
+.add-history-button {
   width: 100%;
   padding: 10px 14px;
   border: none;
@@ -222,8 +221,7 @@
   margin-top: auto;
 }
 
-.add-history-button:hover,
-.add-preset-button:hover {
+.add-history-button:hover {
   background: #155d1f;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(27, 94, 32, 0.3);
@@ -234,19 +232,19 @@
   height: 14px;
 }
 
-/* Preset Settings */
-.preset-settings {
+/* Saved Sessions Settings */
+.saved-sessions-settings {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-.presets-list {
+.saved-sessions-list {
   flex: 1;
   margin-bottom: 16px;
 }
 
-.preset-item {
+.saved-session-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -258,30 +256,30 @@
   transition: all 0.2s;
 }
 
-.preset-item:hover {
+.saved-session-item:hover {
   border-color: #1b5e20;
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(27, 94, 32, 0.15);
 }
 
-.preset-info {
+.saved-session-info {
   flex: 1;
 }
 
-.preset-name {
+.saved-session-name {
   margin: 0 0 3px 0;
   font-size: 13px;
   font-weight: 600;
   color: #1b5e20;
 }
 
-.preset-details {
+.saved-session-details {
   font-size: 11px;
   color: #4caf50;
   font-weight: 500;
 }
 
-.apply-preset-button {
+.apply-saved-session-button {
   padding: 5px 10px;
   border: 2px solid #1b5e20;
   background: transparent;
@@ -294,10 +292,35 @@
   transition: all 0.2s;
 }
 
-.apply-preset-button:hover {
+.apply-saved-session-button:hover {
   background: #1b5e20;
   color: white;
   transform: scale(1.05);
+}
+
+.add-saved-session-button {
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #1b5e20;
+  color: white;
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+  margin-top: auto;
+}
+
+.add-saved-session-button:hover {
+  background: #155d1f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(27, 94, 32, 0.3);
 }
 
 @media (max-width: 1200px) {

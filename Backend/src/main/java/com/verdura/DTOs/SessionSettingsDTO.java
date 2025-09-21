@@ -1,11 +1,15 @@
 package com.verdura.DTOs;
 
 public class SessionSettingsDTO {
+    private String id;
     private String sessionName;
     private Integer workDuration;
     private Integer breakDuration;
     private Integer sessions;
     private Boolean autoStart;
+
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getSessionName() { return sessionName; }
     public void setSessionName(String sessionName) { this.sessionName = sessionName; }

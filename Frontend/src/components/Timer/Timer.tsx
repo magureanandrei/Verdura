@@ -6,6 +6,7 @@ import { Play, Pause, RotateCcw } from "lucide-react";
 import type { CustomSettings } from "../../interfaces/CustomSettings";
 
 const DEFAULT_TIMER_SETTINGS: CustomSettings = {
+  id: "default",
   sessionName: "Default Session",
   workDuration: 0.5,
   breakDuration: 5,

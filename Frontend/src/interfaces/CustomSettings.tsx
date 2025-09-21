@@ -1,5 +1,6 @@
 
 export interface CustomSettings {
+  id: string;
   sessionName: string;
   workDuration: number;
   breakDuration: number;

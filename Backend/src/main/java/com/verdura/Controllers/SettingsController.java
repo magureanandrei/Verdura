@@ -58,6 +58,7 @@ public class SettingsController {
         return userSettings.stream()
             .map(settings -> {
                 SessionSettingsDTO dto = new SessionSettingsDTO();
+                dto.setId(settings.getId().toString());
                 dto.setSessionName(settings.getSessionName());
                 dto.setWorkDuration(settings.getWorkDuration());
                 dto.setBreakDuration(settings.getBreakDuration());

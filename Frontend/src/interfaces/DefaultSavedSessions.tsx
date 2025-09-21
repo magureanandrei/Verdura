@@ -1,10 +1,10 @@
-import type { PresetSettings } from "./SavedSessionsSettings";
+import type { SavedSessionSettings } from "./SavedSessionsSettings";
 
-export const defaultPresets: PresetSettings[] = [
+export const defaultSavedSessions: SavedSessionSettings[] = [
   {
-    id: "classic",
     name: "Classic Session",
     settings: {
+      id: "classic",
       sessionName: "Classic Session",
       workDuration: 25,
       breakDuration: 5,
@@ -14,9 +14,9 @@ export const defaultPresets: PresetSettings[] = [
     },
   },
   {
-    id: "short-burst",
     name: "Short Session",
     settings: {
+      id: "short",
       sessionName: "Short Session",
       workDuration: 15,
       breakDuration: 3,
@@ -26,9 +26,9 @@ export const defaultPresets: PresetSettings[] = [
     },
   },
   {
-    id: "extended",
     name: "Extended Focus",
     settings: {
+      id: "extended",
       sessionName: "Extended Focus",
       workDuration: 50,
       breakDuration: 10,
