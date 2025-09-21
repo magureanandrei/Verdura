@@ -8,7 +8,7 @@ import type { CustomSettings } from "../../interfaces/CustomSettings";
 const DEFAULT_TIMER_SETTINGS: CustomSettings = {
   id: "default",
   sessionName: "Default Session",
-  workDuration: 0.5,
+  workDuration: 25,
   breakDuration: 5,
   sessions: 4,
   autoStart: true,

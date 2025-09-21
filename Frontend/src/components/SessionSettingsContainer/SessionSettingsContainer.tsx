@@ -56,7 +56,7 @@ export default function SessionSettingsContainer({
   };
 
   const applySavedSession = (savedSession: SavedSessionSettings) => {
-    setCurrentCustom(savedSession.settings);
+    onApplySettings(savedSession.settings);
   };
 
   const handleSaveSession = async (e: React.FormEvent) => {
@@ -298,7 +298,7 @@ export default function SessionSettingsContainer({
                     onClick={() => applySavedSession(savedSession)}
                     // TODO: Add backend sync and validation if needed
                   >
-                    Use
+                    Apply
                   </button>
                 </div>
               ))}
