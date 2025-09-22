@@ -7,13 +7,14 @@ import type { SavedSessionSettings } from "../../interfaces/SavedSessionsSetting
 import { defaultSavedSessions } from "../../interfaces/DefaultSavedSessions";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import { useSpring, animated } from "react-spring";
 interface SessionSettingsContainerProps {
   onApplySettings: (settings: CustomSettings) => void;
+  focusMode: boolean;
 }
 
 export default function SessionSettingsContainer({
-  onApplySettings,
+  onApplySettings,focusMode
 }: SessionSettingsContainerProps) {
   const [activeTab, setActiveTab] = useState<"custom" | "savedSessions">(
     "custom"
@@ -198,7 +199,19 @@ export default function SessionSettingsContainer({
     return false;
   };
 
+  const props = useSpring({
+    to: { opacity: focusMode ? 0 : 1 },
+    from: { opacity: focusMode ? 1 : 0 },
+    config: { duration: 1200 }, 
+  });
+
   return (
+    <animated.div 
+      style={{
+        ...props,
+        pointerEvents: focusMode ? 'none' : 'auto',
+        }}
+      >
     <div className="settings-container">
       {/* Tab Navigation */}
       <div className="settings-tabs">
@@ -387,5 +400,6 @@ export default function SessionSettingsContainer({
         )}
       </div>
     </div>
-  );
+    </animated.div>
+    );
 }

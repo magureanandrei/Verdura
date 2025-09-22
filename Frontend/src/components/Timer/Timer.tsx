@@ -4,6 +4,8 @@ import CircularTimer from "../CircluarTimer/CircularTimer";
 import SessionSettingsContainer from "../SessionSettingsContainer/SessionSettingsContainer";
 import { Play, Pause, RotateCcw } from "lucide-react";
 import type { CustomSettings } from "../../interfaces/CustomSettings";
+import { motion } from "framer-motion";
+
 
 const DEFAULT_TIMER_SETTINGS: CustomSettings = {
   id: "default",
@@ -24,6 +26,7 @@ export default function Timer() {
     DEFAULT_TIMER_SETTINGS.workDuration * 60
   );
   const [sessionType, setSessionType] = useState<"work" | "break">("work");
+  const [focusMode, setFocusMode] = useState(false);
 
   const applySettingsToTimer = (settings: CustomSettings) => {
     setTimerSettings(settings);
@@ -32,6 +35,7 @@ export default function Timer() {
     setRemainingTime(newDuration);
     setIsPlaying(false);
     setSessionType("work");
+    setFocusMode(false);
   };
 
   const getTotalDuration = () => {
@@ -77,6 +81,7 @@ export default function Timer() {
             // Auto-start logic: keep playing if auto-start is enabled, otherwise pause
             if (!timerSettings.autoStart) {
               setIsPlaying(false);
+              setFocusMode(false); // Exit focus mode when timer stops
             }
 
             return nextDuration;
@@ -99,11 +104,14 @@ export default function Timer() {
   ]);
 
   const toggleTimer = () => {
-    setIsPlaying(!isPlaying);
+    const newPlayingState = !isPlaying;
+    setIsPlaying(newPlayingState);
+    setFocusMode(newPlayingState); // Focus mode matches playing state
   };
 
   const resetTimer = () => {
     setIsPlaying(false);
+    setFocusMode(false);
     const newDuration =
       sessionType === "work"
         ? timerSettings.workDuration * 60
@@ -115,7 +123,20 @@ export default function Timer() {
 
   return (
     <div className="timer-wrapper">
-      <div className="timer-container">
+      {/* Animated timer container */}
+      <motion.div
+        className="timer-container"
+        animate={{
+          scale: focusMode ? 1.05 : 1,
+          y: focusMode ? -20 : 0,
+         x: focusMode ? "clamp(275px, 10vw, 80px)" : 0,
+
+        }}
+        transition={{ duration: 1.5, ease: "easeInOut" }}
+        style={{
+          transform: focusMode ? undefined : undefined
+        }}
+      >
         {/* Session Name Display */}
         <div className="session-name-display">
           {timerSettings.sessionName || "Default Session"}
@@ -130,6 +151,7 @@ export default function Timer() {
             remainingSeconds={remainingTime}
           />
         </div>
+        
         <div className="control-buttons">
           <button onClick={toggleTimer} className="start-pause-button">
             {isPlaying ? (
@@ -150,8 +172,14 @@ export default function Timer() {
             Reset
           </button>
         </div>
+      </motion.div>
+      
+      <div>
+        <SessionSettingsContainer 
+        onApplySettings={applySettingsToTimer}
+        focusMode={focusMode}
+         />
       </div>
-      <SessionSettingsContainer onApplySettings={applySettingsToTimer} />
     </div>
   );
 }
