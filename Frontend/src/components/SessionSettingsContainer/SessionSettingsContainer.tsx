@@ -131,6 +131,12 @@ export default function SessionSettingsContainer({
 
     if (!validateSessionForSaving()) return false;
 
+    
+    const isDuplicate = await handleDuplicateCheck();
+    if (isDuplicate) {
+      return false; 
+    }
+
     const settingsDTO: SessionSettingsDTO = {
       sessionName: currentCustom.sessionName,
       workDuration: currentCustom.workDuration,
@@ -167,6 +173,29 @@ export default function SessionSettingsContainer({
 
   const handleSaveCurrentTimer = async () => {
     await saveCurrentSession();
+  };
+
+  const handleDuplicateCheck = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return false;
+    
+    const settingsDTO: SessionSettingsDTO = {
+      sessionName: currentCustom.sessionName,
+      workDuration: currentCustom.workDuration,
+      breakDuration: currentCustom.breakDuration,
+      sessions: currentCustom.sessions,
+      autoStart: currentCustom.autoStart,
+    };
+
+    const exists = await axios.post<boolean>(
+      `http://localhost:8080/settings/check-duplicate/${userId}`, 
+      settingsDTO 
+    );
+    if (exists.data) {
+      toast.info("This session configuration already exists in Saved Sessions!");
+      return true;
+    }
+    return false;
   };
 
   return (

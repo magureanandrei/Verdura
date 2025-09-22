@@ -46,9 +46,8 @@ public class SettingsController {
         userSettings.setAutoStart(settingsDTO.getAutoStart());
         userSettings.setUser(user);
         List<UserSettings> settingsList = List.of(userSettings);
-        user.setSettings(settingsList);                                    
+        user.setSettings(settingsList);    
         return settingsService.createSettings(userSettings);
-        //this way means we'll have to send the user from frontend too
     }
 
     @GetMapping("/user/{userId}")
@@ -67,6 +66,17 @@ public class SettingsController {
                 return dto;
             })
             .toList();
+    }
+
+    @PostMapping("/check-duplicate/{userId}")
+    public Boolean checkDuplicateSettings(@PathVariable Long userId, @RequestBody SessionSettingsDTO settingsDTO) {
+        UserSettings userSettings = new UserSettings();
+        userSettings.setSessionName(settingsDTO.getSessionName());
+        userSettings.setWorkDuration(settingsDTO.getWorkDuration());
+        userSettings.setBreakDuration(settingsDTO.getBreakDuration());
+        userSettings.setSessions(settingsDTO.getSessions());
+        userSettings.setAutoStart(settingsDTO.getAutoStart());
+        return settingsService.existsUserSettings(userId, userSettings);
     }
 
 }

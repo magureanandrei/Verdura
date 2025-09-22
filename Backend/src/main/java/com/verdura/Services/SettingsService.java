@@ -56,5 +56,16 @@ public class SettingsService {
         return settingsRepo.save(settings);
     }
 
+    public Boolean existsUserSettings(Long userId, UserSettings settings) {
+        return settingsRepo.existsByUserIdAndSessionNameAndWorkDurationAndBreakDurationAndSessionsAndAutoStart(
+            userId,
+            settings.getSessionName(),
+            settings.getWorkDuration(),
+            settings.getBreakDuration(),
+            settings.getSessions(),
+            settings.getAutoStart()
+        );
+    }
+
     
 }
