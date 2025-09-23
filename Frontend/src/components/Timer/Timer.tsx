@@ -27,6 +27,8 @@ export default function Timer() {
   );
   const [sessionType, setSessionType] = useState<"work" | "break">("work");
   const [focusMode, setFocusMode] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
+
 
   const applySettingsToTimer = (settings: CustomSettings) => {
     setTimerSettings(settings);
@@ -103,6 +105,16 @@ export default function Timer() {
     timerSettings.autoStart,
   ]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 900);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+
   const toggleTimer = () => {
     const newPlayingState = !isPlaying;
     setIsPlaying(newPlayingState);
@@ -127,15 +139,11 @@ export default function Timer() {
       <motion.div
         className="timer-container"
         animate={{
-          scale: focusMode ? 1.05 : 1,
-          y: focusMode ? -20 : 0,
-         x: focusMode ? "clamp(275px, 10vw, 80px)" : 0,
-
+          scale: focusMode ?(isMobile ? 1.25 : 1.05) : 1,
+          y: focusMode ? (isMobile ? 100 : -20) : 0,
+          x: focusMode ? (isMobile ? 0 : "clamp(275px, 10vw, 80px)") : 0,
         }}
         transition={{ duration: 1.5, ease: "easeInOut" }}
-        style={{
-          transform: focusMode ? undefined : undefined
-        }}
       >
         {/* Session Name Display */}
         <div className="session-name-display">

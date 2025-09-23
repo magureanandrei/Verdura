@@ -202,7 +202,7 @@ export default function SessionSettingsContainer({
   const props = useSpring({
     to: { opacity: focusMode ? 0 : 1 },
     from: { opacity: focusMode ? 1 : 0 },
-    config: { duration: 1200 }, 
+    config: { duration: 1200 }
   });
 
   return (
